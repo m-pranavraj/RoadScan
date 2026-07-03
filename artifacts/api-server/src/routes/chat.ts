@@ -27,7 +27,7 @@ and guide them through onboarding. Keep responses concise (2-3 sentences).`;
         "Authorization": `Bearer ${groqApiKey}`,
       },
       body: JSON.stringify({
-        model: "mixtral-8x7b-32768",
+        model: "llama-3.1-8b-instant",
         messages: [
           { role: "system", content: systemPrompt },
           ...(userContext ? [{ role: "user", content: `My username is ${userContext.username}. I have ${userContext.scanCount || 0} scans.` }] : []),
