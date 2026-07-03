@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { eq, desc, count } from "drizzle-orm";
-import { initDb, detectionsTable } from "@workspace/db";
+import { db, detectionsTable } from "@workspace/db";
 import {
   ListDetectionsQueryParams,
   GetDetectionParams,
@@ -8,11 +8,6 @@ import {
 } from "@workspace/api-zod";
 
 const router: IRouter = Router();
-
-async function getDb() {
-  const { db } = await initDb();
-  return db;
-}
 
 router.get("/detections", async (req, res): Promise<void> => {
   const parsed = ListDetectionsQueryParams.safeParse(req.query);
@@ -28,7 +23,6 @@ router.get("/detections", async (req, res): Promise<void> => {
       ? eq(detectionsTable.mediaType, mediaType as "image" | "video")
       : undefined;
 
-  const db = await getDb();
   const [rows, [totalRow]] = await Promise.all([
     db
       .select()
@@ -53,7 +47,6 @@ router.get("/detections/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const db = await getDb();
   const [detection] = await db
     .select()
     .from(detectionsTable)
@@ -74,7 +67,6 @@ router.delete("/detections/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const db = await getDb();
   const [deleted] = await db
     .delete(detectionsTable)
     .where(eq(detectionsTable.id, params.data.id))

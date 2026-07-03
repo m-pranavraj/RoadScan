@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { initDb, detectionsTable, usersTable } from "@workspace/db";
+import { db, detectionsTable, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { runDetection, runFrameDetection } from "../lib/detector";
 import { logger } from "../lib/logger";
@@ -45,11 +45,6 @@ function fileUrl(filename: string, subdir: string): string {
   return `/api/uploads/${subdir}/${filename}`;
 }
 
-async function getDb() {
-  const { db } = await initDb();
-  return db;
-}
-
 router.post("/analyze/image", upload.single("file"), async (req, res): Promise<void> => {
   if (!req.file) {
     res.status(400).json({ error: "No file uploaded" });
@@ -71,12 +66,10 @@ router.post("/analyze/image", upload.single("file"), async (req, res): Promise<v
     const username = req.headers["x-username"] as string | undefined;
     let userId: number | null = null;
     if (username) {
-      const db = await getDb();
       const user = await db.select().from(usersTable).where(eq(usersTable.username, username.toLowerCase().trim())).limit(1);
       if (user.length > 0) userId = user[0].id;
     }
 
-    const db = await getDb();
     const [detection] = await db
       .insert(detectionsTable)
       .values({
@@ -122,12 +115,10 @@ router.post("/analyze/video", upload.single("file"), async (req, res): Promise<v
     const username = req.headers["x-username"] as string | undefined;
     let userId: number | null = null;
     if (username) {
-      const db = await getDb();
       const user = await db.select().from(usersTable).where(eq(usersTable.username, username.toLowerCase().trim())).limit(1);
       if (user.length > 0) userId = user[0].id;
     }
 
-    const db = await getDb();
     const [detection] = await db
       .insert(detectionsTable)
       .values({

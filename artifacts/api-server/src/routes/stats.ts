@@ -1,16 +1,10 @@
 import { Router, type IRouter } from "express";
 import { desc } from "drizzle-orm";
-import { initDb, detectionsTable } from "@workspace/db";
+import { db, detectionsTable } from "@workspace/db";
 
 const router: IRouter = Router();
 
-async function getDb() {
-  const { db } = await initDb();
-  return db;
-}
-
 router.get("/stats", async (req, res): Promise<void> => {
-  const db = await getDb();
   const all = await db
     .select()
     .from(detectionsTable)
@@ -68,7 +62,6 @@ router.get("/stats", async (req, res): Promise<void> => {
 });
 
 router.get("/recent", async (req, res): Promise<void> => {
-  const db = await getDb();
   const rows = await db
     .select()
     .from(detectionsTable)

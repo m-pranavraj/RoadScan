@@ -1,17 +1,12 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { initDb, usersTable } from "@workspace/db";
+import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "roadscan-dev-secret-change-in-prod";
 const SALT_ROUNDS = 10;
-
-async function getDb() {
-  const { db } = await initDb();
-  return db;
-}
 
 router.post("/auth/signup", async (req, res) => {
   const { username, password } = req.body;
@@ -23,7 +18,6 @@ router.post("/auth/signup", async (req, res) => {
   }
 
   const trimmed = username.trim().toLowerCase().slice(0, 32);
-  const db = await getDb();
   const existing = await db.select().from(usersTable).where(eq(usersTable.username, trimmed)).limit(1);
   if (existing.length > 0) {
     res.status(409).json({ error: "Username already taken" }); return;
@@ -47,7 +41,6 @@ router.post("/auth/signin", async (req, res) => {
   }
 
   const trimmed = username.trim().toLowerCase();
-  const db = await getDb();
   const [user] = await db.select().from(usersTable).where(eq(usersTable.username, trimmed)).limit(1);
   if (!user || !user.passwordHash) {
     res.status(401).json({ error: "Invalid username or password" }); return;
@@ -70,7 +63,6 @@ router.get("/auth/me", async (req, res) => {
 
   try {
     const payload = jwt.verify(authHeader.slice(7), JWT_SECRET) as { userId: number };
-    const db = await getDb();
     const [user] = await db.select().from(usersTable).where(eq(usersTable.id, payload.userId)).limit(1);
     if (!user) { res.status(404).json({ error: "User not found" }); return; }
     res.json({ user });
