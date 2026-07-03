@@ -44,6 +44,16 @@ export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
 }
 
+let _globalHeaders: Record<string, string> = {};
+
+export function setGlobalHeader(key: string, value: string | null): void {
+  if (value === null) {
+    delete _globalHeaders[key];
+  } else {
+    _globalHeaders[key] = value;
+  }
+}
+
 function isRequest(input: RequestInfo | URL): input is Request {
   return typeof Request !== "undefined" && input instanceof Request;
 }
@@ -355,6 +365,13 @@ export async function customFetch<T = unknown>(
     const token = await _authTokenGetter();
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
+    }
+  }
+
+  // Attach global headers if they haven't been explicitly provided.
+  for (const [key, value] of Object.entries(_globalHeaders)) {
+    if (!headers.has(key.toLowerCase())) {
+      headers.set(key, value);
     }
   }
 

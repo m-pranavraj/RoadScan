@@ -1,0 +1,4 @@
+- [OpenAI Vision detection](openai-vision-detection.md) — real GPT-4o Vision replaces simulation; falls back to simulation when no OPENAI_API_KEY; frame endpoint for live camera
+- [Exifr GPS extraction](exifr-gps.md) — dynamic import required for exifr (ESM-first); extract lat/lon from EXIF before DB insert
+- [ONNX native module builds in pnpm monorepo](onnx-pnpm-build.md) — native-binary npm packages (onnxruntime-node etc.) silently skip their postinstall unless allow-listed in pnpm-workspace.yaml onlyBuiltDependencies
+- [Orval-generated types need direct package deps](orval-hook-lib-deps.md) — importing generated Zod/type packages directly requires adding them as a real dependency, not relying on transitive resolution
