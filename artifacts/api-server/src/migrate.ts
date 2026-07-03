@@ -13,10 +13,12 @@ console.log("DATABASE_URL host =", new URL(DATABASE_URL).hostname);
 
 function resolveIPv4(host: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    dns.lookup(host, { family: 4, all: false }, (err, address) => {
-      if (err) return reject(new Error(`DNS failed for ${host}: ${err.message}`));
-      console.log(`Resolved ${host} => ${address} (IPv4)`);
-      resolve(address);
+    dns.resolve4(host, (err, addresses) => {
+      if (err || addresses.length === 0) {
+        return reject(new Error(`No A record for ${host}: ${err?.message || "empty result"}`));
+      }
+      console.log(`Resolved ${host} => ${addresses[0]} (A record / IPv4)`);
+      resolve(addresses[0]);
     });
   });
 }
