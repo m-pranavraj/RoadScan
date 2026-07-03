@@ -116,7 +116,7 @@ export default function Home() {
             Upload & Analyze
           </h1>
         </div>
-        <p className="text-white/40 font-mono text-sm ml-4">
+        <p className="text-muted-foreground font-mono text-sm ml-4">
           Deploy AI vision on road captures — detect potholes, plastic waste, and litter with bounding boxes.
         </p>
       </motion.div>
@@ -130,8 +130,8 @@ export default function Home() {
               onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
               onDrop={handleDrop}
               onClick={() => !file && fileInputRef.current?.click()}
-              className={`relative rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden cursor-pointer
-                ${isDragging ? "border-cyan-400 bg-cyan-500/10" : "border-white/10 hover:border-white/25 hover:bg-white/3"}
+              className={`relative rounded-2xl border-2 border-dashed border-border transition-all duration-300 overflow-hidden cursor-pointer
+                ${isDragging ? "border-cyan-500 bg-cyan-50" : "hover:border-stone-300 hover:bg-stone-50"}
                 ${file ? "cursor-default" : ""}`}
               style={{ minHeight: 280 }}
             >
@@ -150,21 +150,19 @@ export default function Home() {
                     <motion.div
                       animate={{ y: [0, -8, 0] }}
                       transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                      className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6"
-                      style={{ background: "linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.2))", border: "1px solid rgba(0,212,255,0.3)", boxShadow: "0 0 30px rgba(0,212,255,0.15)" }}
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 bg-cyan-50 border border-cyan-200 text-cyan-600"
                     >
-                      <UploadCloud className="w-10 h-10 text-cyan-400" />
+                      <UploadCloud className="w-10 h-10" />
                     </motion.div>
-                    <h3 className="text-xl font-bold mb-2 text-white">Drag & Drop Road Media</h3>
-                    <p className="text-white/40 text-sm mb-6 max-w-sm font-mono">
+                    <h3 className="text-xl font-bold mb-2 text-foreground">Drag & Drop Road Media</h3>
+                    <p className="text-muted-foreground text-sm mb-6 max-w-sm font-mono">
                       Dashboard footage, mobile captures, or static images — JPEG, PNG, MP4 supported
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                      className="px-6 py-2.5 rounded-xl font-mono text-sm font-bold text-white"
-                      style={{ background: "linear-gradient(135deg, #00d4ff, #a855f7)", boxShadow: "0 0 20px rgba(0,212,255,0.3)" }}
+                      className="px-6 py-2.5 rounded-xl font-mono text-sm font-bold text-background bg-foreground hover:opacity-90 transition-opacity"
                     >
                       Browse Files
                     </motion.button>
@@ -173,18 +171,16 @@ export default function Home() {
                   <div className="w-full max-w-md">
                     {/* File info */}
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-3 p-4 rounded-xl mb-6 text-left"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center"
-                        style={{ background: "linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.2))" }}>
-                        <FileImage className="w-5 h-5 text-cyan-400" />
+                      className="flex items-center gap-3 p-4 rounded-xl mb-6 text-left border border-border bg-card">
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-cyan-100 border border-cyan-200">
+                        <FileImage className="w-5 h-5 text-cyan-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">{file.name}</p>
-                        <p className="text-xs text-white/40 font-mono">{(file.size / 1024 / 1024).toFixed(2)} MB · {file.type.split("/")[1].toUpperCase()}</p>
+                        <p className="text-sm font-semibold text-foreground truncate">{file.name}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{(file.size / 1024 / 1024).toFixed(2)} MB · {file.type.split("/")[1].toUpperCase()}</p>
                       </div>
                       <button onClick={(e) => { e.stopPropagation(); reset(); }} disabled={isProcessing}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </motion.div>
@@ -192,7 +188,7 @@ export default function Home() {
                     {isProcessing ? (
                       <div className="space-y-4">
                         {/* Progress bar */}
-                        <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div className="h-2 rounded-full bg-muted overflow-hidden">
                           <motion.div
                             className="h-full rounded-full relative overflow-hidden"
                             style={{ width: `${progress}%`, background: "linear-gradient(90deg, #00d4ff, #a855f7)" }}
@@ -214,7 +210,7 @@ export default function Home() {
                           >
                             {SCAN_STEPS[stepIndex]}
                           </motion.span>
-                          <span className="text-white/40">{Math.round(progress)}%</span>
+                          <span className="text-muted-foreground">{Math.round(progress)}%</span>
                         </div>
                       </div>
                     ) : (
@@ -222,8 +218,8 @@ export default function Home() {
                         whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(0,212,255,0.4)" }}
                         whileTap={{ scale: 0.98 }}
                         onClick={(e) => { e.stopPropagation(); startAnalysis(); }}
-                        className="w-full py-3 rounded-xl font-mono font-bold text-white flex items-center justify-center gap-2"
-                        style={{ background: "linear-gradient(135deg, #00d4ff, #a855f7)", boxShadow: "0 0 20px rgba(0,212,255,0.25)" }}
+                        className="w-full py-3 rounded-xl font-mono font-bold text-background flex items-center justify-center gap-2"
+                        style={{ background: "linear-gradient(135deg, hsl(30 10% 25%), hsl(30 10% 20%))" }}
                       >
                         <Zap className="w-4 h-4" />
                         RUN AI ANALYSIS
@@ -257,12 +253,11 @@ export default function Home() {
             className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Annotated image */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="rounded-2xl overflow-hidden relative border border-white/10"
-                style={{ background: "hsl(222 47% 10%)" }}>
+              <div className="rounded-2xl overflow-hidden relative border border-border bg-card">
                 <div className="absolute top-3 left-3 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full"
                   style={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(0,212,255,0.4)" }}>
                   <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="font-mono text-xs text-cyan-300">ANALYZED</span>
+                  <span className="font-mono text-xs text-cyan-600">ANALYZED</span>
                 </div>
                 <div className="relative aspect-video bg-black/50 overflow-hidden">
                   <img src={result.annotatedUrl} alt="Analyzed" className="w-full h-full object-contain" />
@@ -280,7 +275,7 @@ export default function Home() {
                 {(Object.entries(CLASS_COLORS) as [keyof typeof CLASS_COLORS, typeof CLASS_COLORS[keyof typeof CLASS_COLORS]][]).map(([key, cfg]) => (
                   <motion.div key={key} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                     className={`p-4 rounded-xl border bg-gradient-to-br ${cfg.bg} ${cfg.border}`}>
-                    <p className="text-[10px] font-mono text-white/40 uppercase mb-1">{cfg.label}</p>
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase mb-1">{cfg.label}</p>
                     <p className="text-2xl font-black" style={{ color: cfg.color }}>
                       {result.counts[key as keyof typeof result.counts]}
                     </p>
@@ -294,7 +289,7 @@ export default function Home() {
                     borderColor: `${SEV_CONFIG[result.severity as keyof typeof SEV_CONFIG]?.color}50`,
                     boxShadow: `0 0 20px ${SEV_CONFIG[result.severity as keyof typeof SEV_CONFIG]?.glow}`
                   }}>
-                  <p className="text-[10px] font-mono text-white/40 uppercase mb-1">Severity</p>
+                  <p className="text-[10px] font-mono text-muted-foreground uppercase mb-1">Severity</p>
                   <p className="text-xl font-black" style={{ color: SEV_CONFIG[result.severity as keyof typeof SEV_CONFIG]?.color }}>
                     {result.severity.toUpperCase()}
                   </p>
@@ -303,10 +298,10 @@ export default function Home() {
             </div>
 
             {/* Detection log */}
-            <div className="rounded-2xl border border-white/8 flex flex-col overflow-hidden" style={{ background: "hsl(222 47% 10%)" }}>
-              <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
-                <h3 className="font-bold text-white">Detection Log</h3>
-                <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+            <div className="rounded-2xl border border-border flex flex-col overflow-hidden bg-card">
+              <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                <h3 className="font-bold text-foreground">Detection Log</h3>
+                <span className="text-xs font-mono text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">
                   {result.processingTimeMs}ms
                 </span>
               </div>
@@ -314,9 +309,9 @@ export default function Home() {
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {result.objects.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center py-8">
-                    <CheckCircle2 className="w-12 h-12 text-green-500/40 mb-3" />
-                    <p className="font-medium text-white/50 text-sm">Clean Frame</p>
-                    <p className="text-xs text-white/30 mt-1">No anomalies detected</p>
+                    <CheckCircle2 className="w-12 h-12 text-green-600/40 mb-3" />
+                    <p className="font-medium text-muted-foreground text-sm">Clean Frame</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">No anomalies detected</p>
                   </div>
                 ) : (
                   result.objects.map((obj: Detection["objects"][number], i: number) => {
@@ -328,14 +323,14 @@ export default function Home() {
                         className={`p-3 rounded-xl border bg-gradient-to-br ${cfg?.bg} ${cfg?.border}`}
                       >
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-xs font-mono font-bold capitalize text-white/80">
+                          <span className="text-xs font-mono font-bold capitalize text-foreground/80">
                             {obj.className.replace(/_/g, " ")}
                           </span>
                           <span className="text-xs font-mono font-black" style={{ color: cfg?.color }}>
                             {(obj.confidence * 100).toFixed(1)}%
                           </span>
                         </div>
-                        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }} animate={{ width: `${obj.confidence * 100}%` }}
                             transition={{ duration: 0.8, delay: i * 0.08 + 0.2 }}
@@ -349,14 +344,14 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="p-4 border-t border-white/5 flex gap-3">
+              <div className="p-4 border-t border-border flex gap-3">
                 <button onClick={reset}
-                  className="flex-1 py-2 rounded-xl font-mono text-xs font-bold text-white/60 border border-white/10 hover:bg-white/5 transition-colors">
+                  className="flex-1 py-2 rounded-xl font-mono text-xs font-bold text-muted-foreground border border-border hover:bg-muted transition-colors">
                   NEW SCAN
                 </button>
                 <Link href={`/detection/${result.id}`} className="flex-1">
-                  <button className="w-full py-2 rounded-xl font-mono text-xs font-bold text-white"
-                    style={{ background: "linear-gradient(135deg, #00d4ff, #a855f7)", boxShadow: "0 0 12px rgba(0,212,255,0.3)" }}>
+                  <button className="w-full py-2 rounded-xl font-mono text-xs font-bold text-background"
+                    style={{ background: "linear-gradient(135deg, hsl(30 10% 25%), hsl(30 10% 20%))" }}>
                     FULL REPORT
                   </button>
                 </Link>

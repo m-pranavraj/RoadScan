@@ -4,6 +4,16 @@ import { useAuth } from "@/lib/auth";
 
 type Message = { role: "user" | "assistant"; content: string };
 
+function speak(text: string) {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0;
+  u.pitch = 1.0;
+  u.volume = 1;
+  window.speechSynthesis.speak(u);
+}
+
 export default function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Welcome to RoadScan! I can detect potholes, plastic waste, and other litter from your photos. Want a quick tour or just start scanning?" },
@@ -12,6 +22,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const [isLoading, setIsLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+
+  useEffect(() => {
+    speak(messages[0].content);
+  }, []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -33,8 +47,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       });
       const data = await res.json();
       setMessages([...newMessages, { role: "assistant", content: data.reply || "Got it!" }]);
+      speak(data.reply || "Got it!");
     } catch {
       setMessages([...newMessages, { role: "assistant", content: "Ready when you are! Upload a photo to get started." }]);
+      speak("Ready when you are! Upload a photo to get started.");
     }
     setIsLoading(false);
   };

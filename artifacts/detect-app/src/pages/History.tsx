@@ -52,12 +52,12 @@ export default function History() {
               Scan History
             </h1>
           </div>
-          <p className="text-white/40 font-mono text-sm ml-4">
+          <p className="text-muted-foreground font-mono text-sm ml-4">
             Complete log of all field scans — {data?.total ?? 0} records
           </p>
         </motion.div>
 
-        <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-muted border border-border">
           {[
             { key: "all" as const,   icon: FolderSearch, label: "All"    },
             { key: "image" as const, icon: ImageIcon,    label: "Images" },
@@ -66,10 +66,10 @@ export default function History() {
             <button key={key} onClick={() => setFilter(key)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase transition-all ${
                 filter === key
-                  ? "text-white"
-                  : "text-white/30 hover:text-white/60"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
-              style={filter === key ? { background: "linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.15))", border: "1px solid rgba(0,212,255,0.3)" } : {}}
+              style={filter === key ? { background: "linear-gradient(135deg, hsl(189 100% 93%), hsl(271 91% 93%))", border: "1px solid hsl(189 100% 80%)" } : {}}
             >
               <Icon className="w-3 h-3" />
               {label}
@@ -81,20 +81,20 @@ export default function History() {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-[300px] rounded-xl bg-white/5" />
+            <Skeleton key={i} className="h-[300px] rounded-xl bg-muted" />
           ))}
         </div>
       ) : !data || data.items.length === 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="py-24 rounded-2xl flex flex-col items-center justify-center text-center border-2 border-dashed border-white/8">
-          <FolderSearch className="w-12 h-12 text-white/20 mb-4" />
-          <h3 className="text-xl font-bold text-white/60 mb-2">No Records Found</h3>
-          <p className="text-white/30 font-mono text-sm mb-6 max-w-md">
+          className="py-24 rounded-2xl flex flex-col items-center justify-center text-center border-2 border-dashed border-border">
+          <FolderSearch className="w-12 h-12 text-muted-foreground/40 mb-4" />
+          <h3 className="text-xl font-bold text-muted-foreground mb-2">No Records Found</h3>
+          <p className="text-muted-foreground/70 font-mono text-sm mb-6 max-w-md">
             No detections match the current filter. Upload media to generate records.
           </p>
           <Link href="/">
-            <button className="px-5 py-2.5 rounded-xl font-mono font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #00d4ff, #a855f7)", boxShadow: "0 0 20px rgba(0,212,255,0.25)" }}>
+            <button className="px-5 py-2.5 rounded-xl font-mono font-bold text-background"
+              style={{ background: "linear-gradient(135deg, hsl(30 10% 25%), hsl(30 10% 20%))" }}>
               Run New Scan
             </button>
           </Link>
@@ -113,7 +113,7 @@ export default function History() {
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 >
                   <Link href={`/detection/${item.id}`}>
-                    <div className={`group cursor-pointer rounded-2xl overflow-hidden border ${sev?.border} bg-gradient-to-br ${sev?.bg} to-transparent`}
+                    <div className={`group cursor-pointer rounded-2xl overflow-hidden border ${sev?.border} bg-card`}
                       style={{ boxShadow: `0 4px 24px ${sev?.glow}` }}>
                       {/* Image */}
                       <div className="relative aspect-video overflow-hidden"
@@ -122,7 +122,7 @@ export default function History() {
                           <img src={item.thumbnailUrl} alt={item.filename}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white/15 font-mono text-xs">
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground/40 font-mono text-xs">
                             NO PREVIEW
                           </div>
                         )}
@@ -145,10 +145,10 @@ export default function History() {
 
                       {/* Info */}
                       <div className="p-4">
-                        <h3 className="font-bold text-sm truncate text-white/90 mb-1" title={item.filename}>
+                        <h3 className="font-bold text-sm truncate text-foreground mb-1" title={item.filename}>
                           {item.filename}
                         </h3>
-                        <div className="text-xs font-mono text-white/30 mb-3">
+                        <div className="text-xs font-mono text-muted-foreground/70 mb-3">
                           {new Date(item.createdAt).toLocaleString()}
                         </div>
 
@@ -160,7 +160,7 @@ export default function History() {
                               <div key={key} className="flex items-center rounded-lg overflow-hidden text-[10px] font-mono font-bold"
                                 style={{ border: `1px solid ${cfg.color}40` }}>
                                 <span className="px-2 py-0.5" style={{ background: `${cfg.color}20`, color: cfg.color }}>{cfg.label}</span>
-                                <span className="px-2 py-0.5 text-white/70" style={{ background: "rgba(255,255,255,0.05)" }}>{count}</span>
+                                  <span className="px-2 py-0.5 text-muted-foreground" style={{ background: "hsl(40 30% 90%)" }}>{count}</span>
                               </div>
                             );
                           })}
@@ -177,7 +177,7 @@ export default function History() {
                         <button
                           onClick={(e) => handleDelete(item.id, e)}
                           disabled={deleteDetection.isPending}
-                          className="flex items-center gap-1.5 text-[11px] font-mono text-red-400/60 hover:text-red-400 transition-colors px-2 py-1 rounded hover:bg-red-500/10"
+                          className="flex items-center gap-1.5 text-[11px] font-mono text-destructive/70 hover:text-destructive transition-colors px-2 py-1 rounded hover:bg-destructive/10"
                         >
                           <Trash2 className="w-3 h-3" /> Delete
                         </button>

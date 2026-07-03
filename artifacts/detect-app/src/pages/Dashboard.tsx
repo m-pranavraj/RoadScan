@@ -8,17 +8,17 @@ import {
 import { Link } from "wouter";
 
 const SEVERITY_CONFIG = {
-  low:      { bg: "from-emerald-500/20 to-green-600/10",   border: "border-emerald-500/30",  text: "text-emerald-400",  dot: "#22c55e" },
-  medium:   { bg: "from-amber-500/20 to-yellow-600/10",    border: "border-amber-500/30",    text: "text-amber-400",    dot: "#f59e0b" },
-  high:     { bg: "from-orange-500/20 to-red-600/10",      border: "border-orange-500/30",   text: "text-orange-400",   dot: "#f97316" },
-  critical: { bg: "from-red-500/20 to-rose-700/10",        border: "border-red-500/30",      text: "text-red-400",      dot: "#ef4444" },
+  low:      { bg: "from-emerald-500/10 to-green-600/5",   border: "border-emerald-300",  text: "text-emerald-700",  dot: "#22c55e" },
+  medium:   { bg: "from-amber-500/10 to-yellow-600/5",    border: "border-amber-300",    text: "text-amber-700",    dot: "#f59e0b" },
+  high:     { bg: "from-orange-500/10 to-red-600/5",      border: "border-orange-300",   text: "text-orange-700",   dot: "#f97316" },
+  critical: { bg: "from-red-500/10 to-rose-700/5",        border: "border-red-300",      text: "text-red-700",      dot: "#ef4444" },
 };
 
 const STAT_CARDS = [
-  { key: "totalScans",     label: "Total Scans",      icon: Activity,   gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",  border: "border-cyan-500/30",   accent: "#00d4ff",  glow: "glow-cyan"   },
-  { key: "totalObjects",   label: "Objects Detected", icon: Target,     gradient: "from-purple-500/20 via-purple-500/5 to-transparent", border: "border-purple-500/30", accent: "#a855f7",  glow: "glow-purple" },
-  { key: "avgConfidence",  label: "Avg Confidence",   icon: TrendingUp, gradient: "from-green-500/20 via-green-500/5 to-transparent",  border: "border-green-500/30",  accent: "#22c55e",  glow: "glow-green"  },
-  { key: "avgProcessingMs",label: "Avg Processing",   icon: Timer,      gradient: "from-amber-500/20 via-amber-500/5 to-transparent",  border: "border-amber-500/30",  accent: "#f59e0b",  glow: "glow-amber"  },
+  { key: "totalScans",     label: "Total Scans",      icon: Activity,   gradient: "from-cyan-50 via-cyan-50/50 to-transparent",  border: "border-cyan-300",   accent: "#0891b2" },
+  { key: "totalObjects",   label: "Objects Detected", icon: Target,     gradient: "from-purple-50 via-purple-50/50 to-transparent", border: "border-purple-300", accent: "#9333ea" },
+  { key: "avgConfidence",  label: "Avg Confidence",   icon: TrendingUp, gradient: "from-green-50 via-green-50/50 to-transparent",  border: "border-green-300",  accent: "#16a34a" },
+  { key: "avgProcessingMs",label: "Avg Processing",   icon: Timer,      gradient: "from-amber-50 via-amber-50/50 to-transparent",  border: "border-amber-300",  accent: "#d97706" },
 ];
 
 const CLASS_CONFIG = [
@@ -41,13 +41,13 @@ export default function Dashboard() {
     return (
       <div className="space-y-8">
         <div className="space-y-2">
-          <Skeleton className="h-10 w-64 rounded-lg bg-white/5" />
-          <Skeleton className="h-4 w-96 rounded bg-white/5" />
+          <Skeleton className="h-10 w-64 rounded-lg bg-muted" />
+          <Skeleton className="h-4 w-96 rounded bg-muted" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-36 rounded-xl bg-white/5" />)}
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-36 rounded-xl bg-muted" />)}
         </div>
-        <Skeleton className="h-[400px] w-full rounded-xl bg-white/5" />
+        <Skeleton className="h-[400px] w-full rounded-xl bg-muted" />
       </div>
     );
   }
@@ -59,9 +59,9 @@ export default function Dashboard() {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3 mb-2">
           <div className="w-1 h-8 rounded-full" style={{ background: "linear-gradient(180deg, #00d4ff, #a855f7)" }} />
-          <h1 className="text-4xl font-black tracking-tight gradient-text">Command Center</h1>
+          <h1 className="text-4xl font-black tracking-tight" style={{ background: "linear-gradient(135deg, #00d4ff, #22c55e)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Command Center</h1>
         </div>
-        <p className="text-white/40 font-mono text-sm ml-4">
+        <p className="text-muted-foreground font-mono text-sm ml-4">
           Real-time aggregated analytics — monitoring urban infrastructure across all field scans.
         </p>
       </motion.div>
@@ -79,10 +79,10 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
               whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className={`relative overflow-hidden rounded-xl border ${card.border} bg-gradient-to-br ${card.gradient} p-5 card-hover ${card.glow}`}
+              className={`relative overflow-hidden rounded-xl border ${card.border} bg-gradient-to-br ${card.gradient} p-5 hover:shadow-md transition-shadow`}
             >
               <div className="flex justify-between items-start mb-4">
-                <p className="text-xs font-mono uppercase tracking-widest text-white/50">{card.label}</p>
+                <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{card.label}</p>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center"
                   style={{ background: `${card.accent}22`, border: `1px solid ${card.accent}44` }}>
                   <Icon className="w-4 h-4" style={{ color: card.accent }} />
@@ -103,17 +103,16 @@ export default function Dashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="lg:col-span-2 rounded-xl border border-white/8 overflow-hidden"
-          style={{ background: "hsl(222 47% 10%)" }}
+          className="lg:col-span-2 rounded-xl border border-border overflow-hidden bg-card"
         >
-          <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-sm uppercase tracking-widest text-white/70">Daily Scan Activity</span>
+              <Activity className="w-4 h-4 text-cyan-600" />
+              <span className="font-mono text-sm uppercase tracking-widest text-foreground">Daily Scan Activity</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-xs font-mono text-white/30">Live</span>
+              <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+              <span className="text-xs font-mono text-muted-foreground/70">Live</span>
             </div>
           </div>
           <div className="p-4 h-[300px]">
@@ -129,15 +128,15 @@ export default function Dashboard() {
                     <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(30 10% 75%)" />
                 <XAxis dataKey="date" tickLine={false} axisLine={false}
-                  tick={{ fontSize: 11, fontFamily: 'Space Mono', fill: 'rgba(255,255,255,0.3)' }} tickMargin={8} />
+                  tick={{ fontSize: 11, fontFamily: 'Space Mono', fill: 'hsl(30 10% 50%)' }} tickMargin={8} />
                 <YAxis tickLine={false} axisLine={false}
-                  tick={{ fontSize: 11, fontFamily: 'Space Mono', fill: 'rgba(255,255,255,0.3)' }} tickMargin={8} />
+                  tick={{ fontSize: 11, fontFamily: 'Space Mono', fill: 'hsl(30 10% 50%)' }} tickMargin={8} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(222 47% 12%)', border: '1px solid rgba(0,212,255,0.3)', borderRadius: 8, fontFamily: 'Space Mono', fontSize: 11 }}
-                  labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
-                  itemStyle={{ color: '#00d4ff' }}
+                  contentStyle={{ backgroundColor: 'hsl(40 30% 95%)', border: '1px solid hsl(30 10% 75%)', borderRadius: 8, fontFamily: 'Space Mono', fontSize: 11 }}
+                  labelStyle={{ color: 'hsl(30 10% 20%)' }}
+                  itemStyle={{ color: '#0891b2' }}
                 />
                 <Area type="monotone" dataKey="scans" stroke="#00d4ff" strokeWidth={2.5}
                   fill="url(#gradScans)" animationDuration={1200} dot={false} />
@@ -155,11 +154,10 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.35 }}
-            className="rounded-xl border border-white/8 overflow-hidden"
-            style={{ background: "hsl(222 47% 10%)" }}
+            className="rounded-xl border border-border overflow-hidden bg-card"
           >
-            <div className="px-4 py-3 border-b border-white/5">
-              <span className="font-mono text-xs uppercase tracking-widest text-white/50">Class Breakdown</span>
+            <div className="px-4 py-3 border-b border-border">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Class Breakdown</span>
             </div>
             <div className="p-4 space-y-3">
               {CLASS_CONFIG.map((cls) => {
@@ -168,10 +166,10 @@ export default function Dashboard() {
                 return (
                   <div key={cls.key}>
                     <div className="flex justify-between mb-1.5">
-                      <span className="text-xs font-mono text-white/60">{cls.label}</span>
+                      <span className="text-xs font-mono text-muted-foreground">{cls.label}</span>
                       <span className="text-xs font-mono font-bold" style={{ color: cls.color }}>{val}</span>
                     </div>
-                    <div className="h-1.5 rounded-full w-full bg-white/5 overflow-hidden">
+                    <div className="h-1.5 rounded-full w-full bg-muted overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
@@ -202,26 +200,25 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="rounded-xl border border-white/8 overflow-hidden"
-            style={{ background: "hsl(222 47% 10%)" }}
+            className="rounded-xl border border-border overflow-hidden bg-card"
           >
-            <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-              <span className="font-mono text-xs uppercase tracking-widest text-white/50">Recent Alerts</span>
+            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Recent Alerts</span>
               <Link href="/history">
-                <span className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer">
+                <span className="text-xs font-mono text-cyan-600 hover:text-cyan-700 flex items-center gap-1 cursor-pointer">
                   All <ChevronRight className="w-3 h-3" />
                 </span>
               </Link>
             </div>
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-border">
               {recent?.slice(0, 4).map((item) => {
                 const sev = SEVERITY_CONFIG[item.severity as keyof typeof SEVERITY_CONFIG];
                 return (
                   <Link key={item.id} href={`/detection/${item.id}`}>
-                    <div className="px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-between gap-3">
+                    <div className="px-4 py-3 hover:bg-muted transition-colors cursor-pointer flex items-center justify-between gap-3">
                       <div className="min-w-0 flex items-center gap-2.5">
                         <div className="w-2 h-2 rounded-full shrink-0" style={{ background: sev?.dot ?? "#6b7280", boxShadow: `0 0 6px ${sev?.dot ?? "#6b7280"}` }} />
-                        <p className="text-xs font-medium truncate text-white/80">{item.filename}</p>
+                          <p className="text-xs font-medium truncate text-foreground">{item.filename}</p>
                       </div>
                       <span className={`shrink-0 text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-bold ${sev?.text ?? ""} ${sev?.border ?? ""}`}>
                         {item.severity}
@@ -241,7 +238,7 @@ export default function Dashboard() {
 export function SeverityBadge({ severity }: { severity: string }) {
   const config = SEVERITY_CONFIG[severity as keyof typeof SEVERITY_CONFIG];
   return (
-    <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded border font-bold ${config?.text ?? "text-white/50"} ${config?.border ?? "border-white/10"} bg-gradient-to-r ${config?.bg ?? ""}`}>
+    <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded border font-bold ${config?.text ?? "text-muted-foreground"} ${config?.border ?? "border-border"} bg-gradient-to-r ${config?.bg ?? ""}`}>
       {severity}
     </span>
   );
