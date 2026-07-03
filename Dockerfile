@@ -8,17 +8,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install workspace dependencies
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Install pnpm 10 globally (matches workspace pnpm version)
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+
+# Copy workspace manifests in separate steps so missing lockfile
+# doesn't break Docker's cache calculation
+COPY package.json ./package.json
+COPY pnpm-workspace.yaml ./pnpm-workspace.yaml
+
 COPY lib/ ./lib/
 COPY artifacts/api-server/ ./artifacts/api-server/
 COPY artifacts/detect-app/ ./artifacts/detect-app/
 
-# Install pnpm 10 globally (matches workspace pnpm version)
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
-
-# Delete stale lockfile to avoid pnpm format/overrides mismatch,
-# then install with matching pnpm version
+# Delete any stale lockfile and install deps
 RUN rm -f pnpm-lock.yaml \
   && pnpm install --no-frozen-lockfile
 
