@@ -31,11 +31,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/uploads", express.static(uploadsDir));
 app.use("/api", router);
 
-// Serve built frontend
+// Serve built frontend (static files)
 app.use(express.static(frontendDir));
 
-// SPA fallback — all non-API routes return index.html
-app.get("*", (_req, res) => {
+// SPA fallback — serve index.html for all non-API routes
+// Registered after API routes so /api/* is handled first
+app.use((_req, res) => {
   res.sendFile(path.join(frontendDir, "index.html"));
 });
 
