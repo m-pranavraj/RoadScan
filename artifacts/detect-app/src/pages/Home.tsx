@@ -85,7 +85,11 @@ export default function Home() {
       const form = new FormData();
       form.append("file", file);
 
-      const response = await fetch(endpoint, { method: "POST", body: form });
+      const username = localStorage.getItem("x-username");
+      const headers: Record<string, string> = {};
+      if (username) headers["X-Username"] = username;
+
+      const response = await fetch(endpoint, { method: "POST", body: form, headers });
       clearInterval(iv);
       setProgress(100);
       setStepIndex(4);
