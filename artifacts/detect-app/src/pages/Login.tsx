@@ -42,10 +42,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-amber-50/70">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-stone-900/60">
+      {/* Blurred background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center pointer-events-none filter blur-sm scale-110 opacity-30" 
+        style={{ backgroundImage: "url('/scribble_bg.jpg')" }}
+      />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(transparent_95%,#d6d3d1_95%)] [background-size:100%_28px] opacity-30" />
-        <div className="absolute inset-0 bg-[radial-gradient(#78716c_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.08]" />
+        <div className="absolute inset-0 bg-[linear-gradient(transparent_95%,#d6d3d1_95%)] [background-size:100%_28px] opacity-10" />
       </div>
 
       <motion.div
@@ -53,10 +57,10 @@ export default function Login() {
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-sm mx-4"
       >
-        <div className="paper-card-vintage p-0 overflow-hidden">
-          <div className="px-6 pt-6 pb-4 border-b border-dashed border-stone-300/60">
+        <div className="paper-card-vintage p-0 overflow-hidden shadow-2xl bg-white/95 border border-stone-400">
+          <div className="px-6 pt-6 pb-4 border-b border-dashed border-stone-300/60 bg-amber-50/50">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-stone-100 border border-stone-300 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-white border border-stone-300 flex items-center justify-center shadow-inner">
                 <svg width="20" height="20" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M50 90 L70 70 L90 90 L110 70 L130 90" stroke="#78716c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                   <circle cx="90" cy="90" r="8" fill="#78716c"/>
@@ -77,33 +81,33 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
             <div>
-              <label className="block text-xs font-serif font-medium text-stone-600 mb-1">Username</label>
+              <label className="block text-xs font-serif font-bold text-stone-800 mb-1">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Your username"
                 maxLength={32}
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-300 bg-white/80 text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400 font-serif transition-all"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-500 bg-white text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500/30 focus:border-stone-500 font-serif transition-all font-semibold"
                 disabled={step === "loading"}
                 autoFocus
               />
             </div>
 
             <div>
-              <label className="block text-xs font-serif font-medium text-stone-600 mb-1">Password</label>
+              <label className="block text-xs font-serif font-bold text-stone-800 mb-1">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 4 characters"
-                className="w-full px-3 py-2.5 rounded-lg border border-stone-300 bg-white/80 text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400 font-serif transition-all"
+                className="w-full px-3 py-2.5 rounded-lg border border-stone-500 bg-white text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500/30 focus:border-stone-500 font-serif transition-all font-semibold"
                 disabled={step === "loading"}
               />
             </div>
 
             {errorMsg && (
-              <p className="text-xs text-red-600 font-serif italic">{errorMsg}</p>
+              <p className="text-xs text-red-700 font-serif font-bold italic">{errorMsg}</p>
             )}
 
             <button
