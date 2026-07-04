@@ -14,6 +14,7 @@ import Dashboard from "@/pages/Dashboard";
 import History from "@/pages/History";
 import DetectionDetail from "@/pages/DetectionDetail";
 import CameraPage from "@/pages/CameraPage";
+import MapPage from "@/pages/MapPage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ function AppContent() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/camera" component={CameraPage} />
+          <Route path="/map" component={MapPage} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/history" component={History} />
           <Route path="/detection/:id" component={DetectionDetail} />

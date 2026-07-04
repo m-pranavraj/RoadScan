@@ -59,6 +59,9 @@ export default function CameraPage() {
   const [scanning_in_progress, setScanningInProgress] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [frameCount, setFrameCount] = useState(0);
+  const [cameraLat, setCameraLat] = useState<number | null>(null);
+  const [cameraLon, setCameraLon] = useState<number | null>(null);
+  const [gpsStatus, setGpsStatus] = useState<"" | "locating" | "locked" | "denied">("");
 
   const startCamera = useCallback(async () => {
     setError(null);
@@ -72,6 +75,17 @@ export default function CameraPage() {
         await videoRef.current.play();
       }
       setCameraOn(true);
+
+      setGpsStatus("locating");
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCameraLat(pos.coords.latitude);
+          setCameraLon(pos.coords.longitude);
+          setGpsStatus("locked");
+        },
+        () => { setGpsStatus("denied"); },
+        { enableHighAccuracy: true, timeout: 10000 },
+      );
     } catch (err) {
       setError("Camera access denied. Please allow camera permissions and try again.");
     }
@@ -151,6 +165,8 @@ export default function CameraPage() {
       if (!blob) { setScanningInProgress(false); return; }
       const form = new FormData();
       form.append("frame", blob, "frame.jpg");
+      if (cameraLat != null) form.append("lat", String(cameraLat));
+      if (cameraLon != null) form.append("lon", String(cameraLon));
 
       try {
         const res = await fetch("/api/analyze/frame", { method: "POST", body: form });
@@ -356,21 +372,32 @@ export default function CameraPage() {
               </>
             )}
           </div>
+
+          {cameraOn && (
+            <div className="flex items-center gap-2 px-3 py-2 paper-card-vintage">
+              <div className={`w-2 h-2 rounded-full ${gpsStatus === "locked" ? "bg-emerald-500" : gpsStatus === "locating" ? "bg-amber-500 animate-pulse" : "bg-stone-300"}`} />
+              <span className="font-mono text-[10px] text-stone-500">
+                {gpsStatus === "locked"
+                  ? `GPS: ${cameraLat?.toFixed(4)}, ${cameraLon?.toFixed(4)}`
+                  : gpsStatus === "locating"
+                  ? "Acquiring GPS\u2026"
+                  : gpsStatus === "denied"
+                  ? "GPS denied"
+                  : "GPS unavailable"}
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="paper-card-vintage p-4"
-          >
-            <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] text-stone-500 mb-4">
+        <div className="space-y-6">
+          <div className="paper-card-vintage paper-scratches p-4">
+            <h3 className="font-mono text-xs uppercase tracking-widest text-stone-500 mb-3">
               Detection Engine
             </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-serif text-stone-500">Model</span>
-                <span className="text-xs font-mono font-medium text-stone-700">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center font-mono text-sm">
+                <span className="text-stone-500">Model</span>
+                <span className="font-medium">
                   {result?.aiPowered ? "ONNX Models" : "Active"}
                 </span>
               </div>
@@ -396,7 +423,7 @@ export default function CameraPage() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </div>
 
           {!result?.aiPowered && cameraOn && (
             <motion.div
@@ -421,7 +448,7 @@ export default function CameraPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="paper-card-vintage p-4"
+                className="paper-card-vintage paper-scratches paper-stains p-4"
               >
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">

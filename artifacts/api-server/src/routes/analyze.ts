@@ -70,6 +70,9 @@ router.post("/analyze/image", upload.single("file"), async (req, res): Promise<v
       if (user.length > 0) userId = user[0].id;
     }
 
+    const latitude = req.body.lat ? parseFloat(req.body.lat) : null;
+    const longitude = req.body.lon ? parseFloat(req.body.lon) : null;
+
     const [detection] = await db
       .insert(detectionsTable)
       .values({
@@ -81,6 +84,8 @@ router.post("/analyze/image", upload.single("file"), async (req, res): Promise<v
         thumbnailUrl: fileUrl(thumbnailName, "thumbnails"),
         objects: result.objects,
         counts: result.counts,
+        latitude,
+        longitude,
         processingTimeMs: result.processingTimeMs,
         severity: result.severity,
       })
@@ -119,6 +124,9 @@ router.post("/analyze/video", upload.single("file"), async (req, res): Promise<v
       if (user.length > 0) userId = user[0].id;
     }
 
+    const latitude = req.body.lat ? parseFloat(req.body.lat) : null;
+    const longitude = req.body.lon ? parseFloat(req.body.lon) : null;
+
     const [detection] = await db
       .insert(detectionsTable)
       .values({
@@ -130,6 +138,8 @@ router.post("/analyze/video", upload.single("file"), async (req, res): Promise<v
         thumbnailUrl: fileUrl(thumbnailName, "thumbnails"),
         objects: result.objects,
         counts: result.counts,
+        latitude,
+        longitude,
         processingTimeMs: result.processingTimeMs,
         severity: result.severity,
       })
@@ -171,6 +181,9 @@ router.post("/analyze/frame", memUpload.single("frame"), async (req, res): Promi
       if (user.length > 0) userId = user[0].id;
     }
 
+    const latitude = req.body.lat ? parseFloat(req.body.lat) : null;
+    const longitude = req.body.lon ? parseFloat(req.body.lon) : null;
+
     const [detection] = await db
       .insert(detectionsTable)
       .values({
@@ -182,6 +195,8 @@ router.post("/analyze/frame", memUpload.single("frame"), async (req, res): Promi
         thumbnailUrl: fileUrl(thumbnailName, "thumbnails"),
         objects: result.objects,
         counts: result.counts,
+        latitude,
+        longitude,
         processingTimeMs: result.processingTimeMs,
         severity: result.severity,
       })

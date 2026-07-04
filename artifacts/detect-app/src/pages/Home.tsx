@@ -8,6 +8,7 @@ import type { Detection } from "@workspace/api-zod";
 import { Link } from "wouter";
 import { CircularGauge } from "@/components/ui/CircularGauge";
 import { safeCounts } from "@/lib/counts";
+import { LocationPicker } from "@/components/ui/LocationPicker";
 
 const CLASS_COLORS = {
   pothole:       { color: "#b91c1c", bg: "bg-red-50",     border: "border-red-300", label: "Potholes",     chip: "border-red-300 text-red-700 bg-red-50/80" },
@@ -37,6 +38,8 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [result, setResult] = useState<Detection | null>(null);
+  const [locationLat, setLocationLat] = useState<number | null>(null);
+  const [locationLon, setLocationLon] = useState<number | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -64,6 +67,8 @@ export default function Home() {
     setProgress(0);
     setIsProcessing(false);
     setStepIndex(0);
+    setLocationLat(null);
+    setLocationLon(null);
   };
 
   const startAnalysis = async () => {
@@ -86,6 +91,8 @@ export default function Home() {
       const endpoint = file.type.startsWith("video/") ? "/api/analyze/video" : "/api/analyze/image";
       const form = new FormData();
       form.append("file", file);
+      if (locationLat != null) form.append("lat", String(locationLat));
+      if (locationLon != null) form.append("lon", String(locationLon));
 
       const username = localStorage.getItem("x-username");
       const headers: Record<string, string> = {};
@@ -137,7 +144,7 @@ export default function Home() {
               onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
               onDrop={handleDrop}
               onClick={() => !file && fileInputRef.current?.click()}
-              className={`relative overflow-hidden cursor-pointer transition-all duration-300
+              className={`relative overflow-hidden cursor-pointer transition-all duration-300 paper-scratches paper-stains
                 ${file ? "cursor-default" : ""}
                 ${isDragging ? "paper-card-stitch !border-stone-500" : "paper-card-stitch"}`}
               style={{ minHeight: 280 }}
@@ -189,6 +196,13 @@ export default function Home() {
                         <Trash2 className="w-4 h-4" />
                       </motion.button>
                     </motion.div>
+
+                    <LocationPicker
+                      onLocationChange={(lat, lon) => {
+                        setLocationLat(lat);
+                        setLocationLon(lon);
+                      }}
+                    />
 
                     {isProcessing ? (
                       <div className="space-y-4">
@@ -265,7 +279,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="paper-card-vintage overflow-hidden"
+                className="paper-card-vintage paper-scratches paper-stains overflow-hidden"
               >
                 <div className="absolute top-3 left-3 z-10 flex items-center gap-2 px-3 py-1.5"
                   style={{ background: "rgba(255,255,255,0.9)", border: "1px solid hsl(30 10% 75%)" }}>
@@ -288,7 +302,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
-                className="paper-card-vintage p-5"
+                className="paper-card-vintage paper-scratches paper-stains p-5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -349,7 +363,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="paper-card-vintage flex flex-col"
+              className="paper-card-vintage paper-scratches paper-stains flex flex-col"
             >
               <div className="px-5 py-4 border-b border-dashed border-stone-300/60 flex items-center justify-between">
                 <h3 className="font-serif text-sm font-semibold text-stone-700">Detections</h3>

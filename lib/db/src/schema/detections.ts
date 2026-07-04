@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, jsonb, timestamp, doublePrecision } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
@@ -13,6 +13,8 @@ export const detectionsTable = pgTable("detections", {
   thumbnailUrl: text("thumbnail_url"),
   objects: jsonb("objects").notNull().$type<DetectedObject[]>(),
   counts: jsonb("counts").notNull().$type<DetectionCounts>(),
+  latitude: doublePrecision("latitude"),
+  longitude: doublePrecision("longitude"),
   processingTimeMs: integer("processing_time_ms").notNull(),
   severity: text("severity").notNull().$type<"low" | "medium" | "high" | "critical">(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

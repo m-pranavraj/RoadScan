@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { useGetStats, useGetRecentDetections } from "@workspace/api-client-react";
-import { Activity, Target, TrendingUp, Timer, ChevronRight } from "lucide-react";
+import { useGetStats, useGetRecentDetections, useGetMapDetections } from "@workspace/api-client-react";
+import { Activity, Target, TrendingUp, Timer, ChevronRight, MapPin } from "lucide-react";
 import {
   Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, BarChart, Bar, Cell,
 } from "recharts";
@@ -91,7 +91,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
               whileHover={{ y: -2, transition: { duration: 0.2 } }}
-              className="paper-card-vintage p-4"
+              className="paper-card-vintage paper-scratches paper-stains paper-fold p-4 group cursor-default"
             >
               <div className="flex justify-between items-start mb-3">
                 <p className="text-xs font-serif text-stone-500">{card.label}</p>
@@ -113,13 +113,21 @@ export default function Dashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="lg:col-span-2 paper-card-vintage p-0"
+          className="lg:col-span-2 paper-card-vintage paper-scratches paper-stains p-0"
         >
           <div className="px-4 py-3 border-b border-dashed border-stone-300/60 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-stone-500" />
               <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Daily Scan Activity</span>
             </div>
+            <motion.div
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="flex items-center gap-1.5"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
+              <span className="text-[10px] font-mono text-stone-500 uppercase tracking-wider">Live</span>
+            </motion.div>
           </div>
           <div className="p-4 h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -160,7 +168,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.35 }}
-            className="paper-card-vintage p-0"
+            className="paper-card-vintage paper-scratches paper-stains p-0"
           >
             <div className="px-4 py-3 border-b border-dashed border-stone-300/60">
               <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Class Breakdown</span>
@@ -206,7 +214,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="paper-card-vintage p-0"
+            className="paper-card-vintage paper-scratches paper-stains p-0"
           >
             <div className="px-4 py-3 border-b border-dashed border-stone-300/60 flex items-center justify-between">
               <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Recent Alerts</span>
@@ -238,7 +246,66 @@ export default function Dashboard() {
           </motion.div>
         </div>
       </div>
+
+      {/* Geo Map Widget */}
+      <DashboardMiniMap />
     </div>
+  );
+}
+
+function DashboardMiniMap() {
+  const { data: mapDetections } = useGetMapDetections();
+  const geoCount = (mapDetections ?? []).filter((d) => d.lat != null).length;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.45 }}
+      className="paper-card-vintage paper-scratches paper-stains p-4"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-stone-500" />
+          <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Geo-Tagged Detections</span>
+        </div>
+        <Link href="/map">
+          <span className="font-serif text-xs text-stone-500 hover:text-stone-700 flex items-center gap-1 cursor-pointer italic">
+            View Map <ChevronRight className="w-3 h-3" />
+          </span>
+        </Link>
+      </div>
+
+      {geoCount > 0 ? (
+        <div className="flex items-center gap-6 flex-wrap">
+          <div className="flex-1 min-w-0">
+            <p className="font-serif text-sm text-stone-700">
+              <strong className="text-lg">{geoCount}</strong> detection{geoCount !== 1 ? "s" : ""} with location data
+            </p>
+            <p className="font-serif text-xs text-stone-500 italic mt-1">
+              Pinpointed on the interactive detection map
+            </p>
+          </div>
+          <Link href="/map">
+            <span className="btn-vintage text-xs flex items-center gap-1.5">
+              <MapPin className="w-3 h-3" /> Open Map
+            </span>
+          </Link>
+        </div>
+      ) : (
+        <div className="text-center py-6">
+          <MapPin className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+          <p className="font-serif text-xs text-stone-500 italic">
+            No geo-tagged detections yet. Enable location during scanning or pin a location when uploading.
+          </p>
+          <Link href="/camera">
+            <span className="inline-block mt-3 font-serif text-xs text-stone-600 hover:text-stone-800 underline underline-offset-2 cursor-pointer">
+              Go to Camera &rarr;
+            </span>
+          </Link>
+        </div>
+      )}
+    </motion.div>
   );
 }
 

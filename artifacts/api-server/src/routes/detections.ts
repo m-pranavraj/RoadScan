@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, and, desc, count } from "drizzle-orm";
+import { eq, and, desc, count, sql } from "drizzle-orm";
 import { db, detectionsTable } from "@workspace/db";
 import {
   ListDetectionsQueryParams,
@@ -44,6 +44,22 @@ router.get("/detections", requireAuth, async (req, res): Promise<void> => {
   } catch (err) {
     req.log.error({ err }, "Failed to list detections");
     res.status(500).json({ error: "Failed to load detections" });
+  }
+});
+
+router.get("/detections/map", requireAuth, async (req, res): Promise<void> => {
+  try {
+    const uid = req.userId as number;
+    const rows = await db
+      .select()
+      .from(detectionsTable)
+      .where(and(eq(detectionsTable.userId, uid), sql`${detectionsTable.latitude} IS NOT NULL`))
+      .orderBy(desc(detectionsTable.createdAt));
+
+    res.json(rows);
+  } catch (err) {
+    req.log.error({ err }, "Failed to load map detections");
+    res.status(500).json({ error: "Failed to load map detections" });
   }
 });
 

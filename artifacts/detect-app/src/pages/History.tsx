@@ -105,20 +105,21 @@ export default function History() {
           </Link>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <AnimatePresence>
-            {data.items.map((item, i) => {
-              const sev = SEV_CONFIG[item.severity as keyof typeof SEV_CONFIG];
-              return (
-                <motion.div key={item.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3, delay: i * 0.04 }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                >
-                  <Link href={`/detection/${item.id}`}>
-                    <div className="paper-card-vintage group cursor-pointer">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <AnimatePresence>
+              {data.items.map((item, i) => {
+                const sev = SEV_CONFIG[item.severity as keyof typeof SEV_CONFIG];
+                return (
+                  <motion.div key={item.id}
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, delay: i * 0.04 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  >
+                    <Link href={`/detection/${item.id}`}>
+                      <div className={`paper-card-vintage paper-scratches paper-stains group cursor-pointer`}
+                        style={{ boxShadow: `0 4px 24px ${sev?.glow}` }}>
                       {/* Image */}
                       <div className="relative aspect-video overflow-hidden"
                         style={{ background: "hsl(40 30% 90%)" }}>
@@ -146,7 +147,7 @@ export default function History() {
 
                       {/* Info */}
                       <div className="p-3">
-                        <h3 className="font-serif text-sm font-semibold text-stone-800 truncate mb-0.5" title={item.filename}>
+                        <h3 className="font-serif text-sm font-semibold text-stone-800 truncate mb-0.5 underline-squiggle" title={item.filename}>
                           {item.filename}
                         </h3>
                         <p className="text-xs font-mono text-stone-500 mb-2">
