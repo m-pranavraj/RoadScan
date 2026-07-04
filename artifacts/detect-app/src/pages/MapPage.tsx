@@ -41,7 +41,7 @@ const SEVERITY_ICONS = {
   critical: createMarkerIcon("critical"),
 };
 
-function ClusterLayer({ detections }: { detections: Array<{ id: number; lat: number; lon: number; severity: string; filename: string; counts: { total: number } }> }) {
+function ClusterLayer({ detections }: { detections: Array<{ id: number; lat: number; lon: number; severity: string; filename: string; counts: { total: number }; thumbnailUrl?: string | null }> }) {
   const map = useMap();
 
   useEffect(() => {
@@ -79,14 +79,18 @@ function ClusterLayer({ detections }: { detections: Array<{ id: number; lat: num
         const marker = L.marker([d.lat, d.lon], { icon });
         const severityColor = SEVERITY_COLORS[d.severity] ?? "#78716c";
         const safeName = String(d.filename ?? "").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        const imgTag = d.thumbnailUrl
+          ? `<div style="margin-bottom:8px;max-height:80px;overflow:hidden;border:1px solid #ddd;border-radius:3px;"><img src="${d.thumbnailUrl}" style="width:100%;height:auto;object-fit:cover;" /></div>`
+          : "";
         marker.bindPopup(`
-          <div style="font-family:'Source Serif 4',serif;font-size:12px;min-width:160px;">
+          <div style="font-family:'Source Serif 4',serif;font-size:12px;min-width:160px;padding:4px;">
+            ${imgTag}
             <p style="font-weight:600;margin:0 0 4px;color:#444;">${safeName}</p>
             <p style="margin:0 0 2px;font-size:11px;color:#666;">
               Severity: <strong style="color:${severityColor}">${(d.severity ?? "unknown").toUpperCase()}</strong>
             </p>
-            <p style="margin:0 0 2px;font-size:11px;color:#666;">Objects: ${d.counts?.total ?? 0}</p>
-            <a href="/detection/${d.id}" style="color:#0891b2;font-size:11px;text-decoration:underline;">View details →</a>
+            <p style="margin:0 0 4px;font-size:11px;color:#666;">Objects: ${d.counts?.total ?? 0}</p>
+            <a href="/detection/${d.id}" style="display:inline-block;background:#0891b2;color:white;padding:4px 8px;border-radius:2px;font-size:10px;text-decoration:none;font-weight:bold;">View Report →</a>
           </div>
         `);
         mcg.addLayer(marker);
@@ -167,6 +171,7 @@ export default function MapPage() {
         severity: d.severity,
         filename: d.filename,
         counts: d.counts,
+        thumbnailUrl: d.thumbnailUrl,
       }));
   }, [detections]);
 

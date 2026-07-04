@@ -272,11 +272,15 @@ async function annotateImage(
     const safeLeft = Math.max(0, Math.min(bx, imgW - bw));
     const safeTop = Math.max(0, Math.min(by, imgH - bh));
 
+    // Label should be positioned exactly above the bounding box. If bbox is at the very top (by < labelH), render label inside the bbox.
+    const labelLeft = Math.max(0, Math.min(bx, imgW - labelW));
+    const labelTop = by >= labelH ? by - labelH : by;
+
     overlays.push({ input: Buffer.from(rectSvg), left: safeLeft, top: safeTop });
     overlays.push({
       input: Buffer.from(labelSvg),
-      left: Math.max(0, Math.min(bx, imgW - labelW)),
-      top: Math.max(0, by - labelH),
+      left: labelLeft,
+      top: labelTop,
     });
   }
 

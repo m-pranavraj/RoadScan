@@ -47,7 +47,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-amber-50/60">
+    <div className="flex h-screen w-full overflow-hidden bg-amber-50/60 blue-ink paper-scratches paper-stains">
       {/* Hamburger button — mobile only */}
       <button
         onClick={() => setMobileOpen((v) => !v)}

@@ -256,12 +256,10 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  background:
-    linear-gradient(60deg, transparent 49%, rgba(59,130,246,0.22) 49.5%, transparent 50%) 15% 25% / 100px 1px no-repeat,
-    linear-gradient(-45deg, transparent 48%, rgba(59,130,246,0.18) 48.5%, transparent 49%) 65% 55% / 140px 1px no-repeat,
-    linear-gradient(30deg, transparent 49.5%, rgba(59,130,246,0.25) 49.8%, transparent 50%) 40% 75% / 80px 1px no-repeat,
-    linear-gradient(-70deg, transparent 48%, rgba(59,130,246,0.15) 48.5%, transparent 49%) 80% 20% / 110px 1px no-repeat;
+  z-index: 10;
+  opacity: 0.85;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M10,20 Q50,45 80,10 T150,40 M30,120 C80,80 120,150 170,100 M60,60 L140,140 M140,60 L60,140' stroke='%230f2d59' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.75'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
 }
 
 /* Tag/pill vintage */
@@ -317,16 +315,10 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
-  background:
-    /* Thin scratch lines at various angles */
-    linear-gradient(75deg, transparent 48%, rgba(120,113,108,0.18) 48.5%, transparent 49%) 10% 20% / 80px 1px no-repeat,
-    linear-gradient(-30deg, transparent 47%, rgba(120,113,108,0.14) 47.5%, transparent 48%) 60% 50% / 120px 1px no-repeat,
-    linear-gradient(45deg, transparent 49%, rgba(120,113,108,0.12) 49.5%, transparent 50%) 30% 75% / 60px 1px no-repeat,
-    linear-gradient(-60deg, transparent 48%, rgba(120,113,108,0.16) 48.5%, transparent 49%) 80% 30% / 100px 1px no-repeat,
-    linear-gradient(15deg, transparent 49%, rgba(120,113,108,0.10) 49.5%, transparent 50%) 50% 90% / 70px 1px no-repeat,
-    linear-gradient(80deg, transparent 49.5%, rgba(120,113,108,0.20) 49.8%, transparent 50%) 25% 60% / 50px 1px no-repeat,
-    linear-gradient(-15deg, transparent 48%, rgba(120,113,108,0.08) 48.5%, transparent 49%) 70% 15% / 90px 1px no-repeat;
+  z-index: 10;
+  opacity: 0.9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath d='M80,80 L20,30 M80,80 L140,20 M80,80 L50,140 M80,80 L130,130 M20,30 L10,10 M50,140 L40,150 M140,20 L150,10 M130,130 L145,145 M40,50 L20,30 L50,20 M120,40 L140,20 L130,10' stroke='%2378716c' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.7'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
 }
 
 /* Paper fold — folded corner bottom-right */
