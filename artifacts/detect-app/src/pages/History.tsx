@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, Image as ImageIcon, Video, FolderSearch } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { CircularGauge } from "@/components/ui/CircularGauge";
 
 const SEV_CONFIG = {
   low:      { color: "#22c55e", border: "border-green-500/40",  bg: "from-green-500/15",  text: "text-green-400",  glow: "rgba(34,197,94,0.3)"   },
@@ -13,10 +14,10 @@ const SEV_CONFIG = {
   critical: { color: "#ef4444", border: "border-red-500/40",    bg: "from-red-500/15",    text: "text-red-400",    glow: "rgba(239,68,68,0.4)"   },
 };
 
-const CLASS_CHIPS = {
-  pothole:       { color: "#ef4444", label: "PTH" },
-  plastic_waste: { color: "#f59e0b", label: "PLS" },
-  other_litter:  { color: "#a855f7", label: "LTR" },
+const CLASS_GAUGES = {
+  pothole:       { color: "#ef4444", label: "Potholes" },
+  plastic_waste: { color: "#f59e0b", label: "Plastic"  },
+  other_litter:  { color: "#a855f7", label: "Litter"   },
 };
 
 export default function History() {
@@ -151,23 +152,31 @@ export default function History() {
                           {new Date(item.createdAt).toLocaleString()}
                         </p>
 
-                        <div className="flex flex-wrap gap-1">
-                          {(Object.entries(CLASS_CHIPS) as [keyof typeof CLASS_CHIPS, typeof CLASS_CHIPS[keyof typeof CLASS_CHIPS]][]).map(([key, cfg]) => {
-                            const count = item.counts[key as keyof typeof item.counts];
-                            if (!count) return null;
-                            return (
-                              <span key={key} className="tag-vintage text-[10px] font-bold"
-                                style={{ background: `${cfg.color}15`, color: cfg.color, borderColor: `${cfg.color}40` }}>
-                                {cfg.label} {count}
-                              </span>
-                            );
-                          })}
-                          {item.counts.total === 0 && (
-                            <span className="tag-vintage text-[10px]" style={{ color: "#78716c" }}>
-                              CLEAN
-                            </span>
-                          )}
-                        </div>
+                        {item.counts.total > 0 ? (
+                          <div className="flex items-center justify-center gap-3">
+                            {(Object.entries(CLASS_GAUGES) as [keyof typeof CLASS_GAUGES, typeof CLASS_GAUGES[keyof typeof CLASS_GAUGES]][]).map(([key, cfg]) => {
+                              const count = item.counts[key as keyof typeof item.counts];
+                              if (!count) return null;
+                              const objectsForClass = (item.objects ?? []).filter((o: { className: string }) => o.className === key);
+                              const avgConf = objectsForClass.length > 0
+                                ? objectsForClass.reduce((sum: number, o: { confidence: number }) => sum + o.confidence, 0) / objectsForClass.length * 100
+                                : 0;
+                              return (
+                                <CircularGauge
+                                  key={key}
+                                  value={avgConf}
+                                  size={52}
+                                  strokeWidth={4}
+                                  color={cfg.color}
+                                  label={cfg.label}
+                                  count={count}
+                                />
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <span className="font-serif text-xs text-stone-400 italic">Clean scan</span>
+                        )}
                       </div>
 
                       {/* Delete */}
