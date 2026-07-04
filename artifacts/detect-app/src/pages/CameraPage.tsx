@@ -504,15 +504,15 @@ export default function CameraPage() {
             )}
           </AnimatePresence>
 
-          {!result && cameraOn && !scanning && (
+          {!result && cameraOn && !scanning_in_progress && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="stitch-border p-6 text-center bg-stone-50/50"
             >
-              <RefreshCw className="w-6 h-6 text-stone-400 mx-auto mb-2" />
+              <Camera className="w-6 h-6 text-stone-400 mx-auto mb-2" />
               <p className="font-serif text-xs text-stone-500 italic">
-                Start scanning to see live detections
+                Capture a frame to analyze for detections
               </p>
             </motion.div>
           )}
