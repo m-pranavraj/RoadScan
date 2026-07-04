@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getListDetectionsQueryKey, getGetStatsQueryKey, getGetRecentDetectionsQueryKey } from "@workspace/api-client-react";
 import { CircularGauge } from "@/components/ui/CircularGauge";
 import { safeCounts } from "@/lib/counts";
+import { useAuth } from "@/lib/auth";
 
 type DetectedObject = {
   id: string;
@@ -22,6 +23,8 @@ type ScanResult = {
   processingTimeMs: number;
   severity: "low" | "medium" | "high" | "critical";
   aiPowered: boolean;
+  annotatedUrl?: string;
+  originalUrl?: string;
 };
 
 const CLASS_COLORS = {
@@ -52,6 +55,7 @@ export default function CameraPage() {
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const [scanning, setScanning] = useState(false);
   const [cameraOn, setCameraOn] = useState(false);
@@ -169,9 +173,13 @@ export default function CameraPage() {
       if (cameraLon != null) form.append("lon", String(cameraLon));
 
       try {
-        const res = await fetch("/api/analyze/frame", { method: "POST", body: form });
+        const username = localStorage.getItem("x-username");
+        const headers: Record<string, string> = {};
+        if (username) headers["X-Username"] = username;
+
+        const res = await fetch("/api/analyze/frame", { method: "POST", body: form, headers });
         if (!res.ok) throw new Error("Analysis failed");
-        const data: ScanResult = await res.json();
+        const data = await res.json();
         setResult(data);
         setFrameCount((n) => n + 1);
         drawOverlay(data.objects, vw, vh);
@@ -466,6 +474,15 @@ export default function CameraPage() {
                     {result.severity}
                   </motion.span>
                 </div>
+
+                {result.annotatedUrl && (
+                  <div className="mt-4 pt-4 border-t border-dashed border-stone-300/60">
+                    <p className="font-serif text-[10px] text-stone-400 italic mb-2 uppercase tracking-wider">Analyzed Capture</p>
+                    <div className="relative aspect-video bg-stone-900/5 overflow-hidden paper-card-stitch">
+                      <img src={result.annotatedUrl} alt="Analyzed frame" className="w-full h-full object-contain" loading="lazy" />
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex justify-center gap-6 flex-wrap">
                   {(["pothole", "plastic_waste", "other_litter"] as const).map((cls, i) => {

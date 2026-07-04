@@ -309,7 +309,7 @@
 
 /* ===== PAPER SCRATCHES & AUTHENTIC WEAR ===== */
 
-/* Scratch lines — subtle hairline scratches across the card */
+/* Scratch lines — visible hairline scratches across the card */
 .paper-scratches::after {
   content: '';
   position: absolute;
@@ -318,11 +318,13 @@
   z-index: 2;
   background:
     /* Thin scratch lines at various angles */
-    linear-gradient(75deg, transparent 48%, rgba(0,0,0,0.015) 48.5%, transparent 49%) 10% 20% / 80px 1px no-repeat,
-    linear-gradient(-30deg, transparent 47%, rgba(0,0,0,0.01) 47.5%, transparent 48%) 60% 50% / 120px 1px no-repeat,
-    linear-gradient(45deg, transparent 49%, rgba(0,0,0,0.008) 49.5%, transparent 50%) 30% 75% / 60px 1px no-repeat,
-    linear-gradient(-60deg, transparent 48%, rgba(0,0,0,0.012) 48.5%, transparent 49%) 80% 30% / 100px 1px no-repeat,
-    linear-gradient(15deg, transparent 49%, rgba(0,0,0,0.007) 49.5%, transparent 50%) 50% 90% / 70px 1px no-repeat;
+    linear-gradient(75deg, transparent 48%, rgba(120,113,108,0.18) 48.5%, transparent 49%) 10% 20% / 80px 1px no-repeat,
+    linear-gradient(-30deg, transparent 47%, rgba(120,113,108,0.14) 47.5%, transparent 48%) 60% 50% / 120px 1px no-repeat,
+    linear-gradient(45deg, transparent 49%, rgba(120,113,108,0.12) 49.5%, transparent 50%) 30% 75% / 60px 1px no-repeat,
+    linear-gradient(-60deg, transparent 48%, rgba(120,113,108,0.16) 48.5%, transparent 49%) 80% 30% / 100px 1px no-repeat,
+    linear-gradient(15deg, transparent 49%, rgba(120,113,108,0.10) 49.5%, transparent 50%) 50% 90% / 70px 1px no-repeat,
+    linear-gradient(80deg, transparent 49.5%, rgba(120,113,108,0.20) 49.8%, transparent 50%) 25% 60% / 50px 1px no-repeat,
+    linear-gradient(-15deg, transparent 48%, rgba(120,113,108,0.08) 48.5%, transparent 49%) 70% 15% / 90px 1px no-repeat;
 }
 
 /* Paper fold — folded corner bottom-right */
@@ -331,8 +333,8 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: linear-gradient(225deg, transparent 50%, hsl(40 25% 85%) 50%);
   border-left: 1px solid hsl(30 10% 78%);
   border-top: 1px solid hsl(30 10% 78%);
@@ -340,7 +342,7 @@
   z-index: 2;
 }
 
-/* Aged paper stain — subtle circular discolorations */
+/* Aged paper stain — visible circular discolorations */
 .paper-stains::before {
   content: '';
   position: absolute;
@@ -348,12 +350,12 @@
   pointer-events: none;
   z-index: 1;
   background:
-    radial-gradient(ellipse at 15% 25%, rgba(180, 150, 100, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 60%, rgba(160, 130, 80, 0.04) 0%, transparent 40%),
-    radial-gradient(ellipse at 45% 80%, rgba(140, 110, 60, 0.03) 0%, transparent 35%);
+    radial-gradient(ellipse at 15% 25%, rgba(180, 150, 100, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 60%, rgba(160, 130, 80, 0.14) 0%, transparent 40%),
+    radial-gradient(ellipse at 45% 80%, rgba(140, 110, 60, 0.12) 0%, transparent 35%);
 }
 
-/* Ink splatter — tiny dots simulating dried ink */
+/* Ink splatter — visible dots simulating dried ink */
 .ink-splatter::after {
   content: '';
   position: absolute;
@@ -364,10 +366,10 @@
   top: 0;
   left: 0;
   box-shadow:
-    4px 12px 0 -1px rgba(80, 60, 30, 0.03),
-    8px 24px 0 -2px rgba(80, 60, 30, 0.02),
-    92% 5% 0 -1px rgba(80, 60, 30, 0.025),
-    95% 18% 0 -2px rgba(80, 60, 30, 0.015);
+    4px 12px 0 -1px rgba(80, 60, 30, 0.12),
+    8px 24px 0 -2px rgba(80, 60, 30, 0.08),
+    92% 5% 0 -1px rgba(80, 60, 30, 0.10),
+    95% 18% 0 -2px rgba(80, 60, 30, 0.06);
 }
 
 /* Pen margin line — vertical ink line like a margin note */
@@ -378,7 +380,7 @@
   top: 12px;
   bottom: 12px;
   width: 2px;
-  background: linear-gradient(180deg, rgba(80, 60, 30, 0.08), rgba(80, 60, 30, 0.03) 60%, transparent);
+  background: linear-gradient(180deg, rgba(80, 60, 30, 0.15), rgba(80, 60, 30, 0.05) 60%, transparent);
   pointer-events: none;
   z-index: 2;
 }
@@ -457,6 +459,7 @@
   pointer-events: none;
   z-index: 0;
   font-family: serif;
+  color: rgba(120, 113, 108, 0.4);
 }
 
 /* Crossed-out text effect */
