@@ -5,6 +5,17 @@ const router = Router();
 
 const VALID_MODELS = ["llama3-8b-8192", "llama-3.2-3b-preview", "mixtral-8x7b-32768"];
 
+const ERROR_PATTERNS = [
+  /ERROR:/i,
+  /does not support image input/i,
+  /Cannot read.*\.(png|jpg|jpeg|gif|bmp|webp)/i,
+  /this model does not support/i,
+];
+
+function containsErrorText(text: string): boolean {
+  return ERROR_PATTERNS.some((p) => p.test(text));
+}
+
 router.post("/chat", requireAuth, async (req, res) => {
   const { message } = req.body;
   if (!message || typeof message !== "string" || message.length > 2000) {
@@ -43,15 +54,37 @@ router.post("/chat", requireAuth, async (req, res) => {
       }),
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      req.log.error({ status: response.status, body: errText }, "Groq API returned error");
+    const rawBody = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(rawBody);
+    } catch {
+      req.log.error({ status: response.status, body: rawBody }, "Groq returned non-JSON");
       res.status(502).json({ error: "AI assistant temporarily unavailable" });
       return;
     }
 
-    const data = await response.json();
-    res.json({ reply: data.choices?.[0]?.message?.content || "I'm not sure how to respond to that." });
+    if (data.error) {
+      req.log.error({ status: response.status, groqError: data.error }, "Groq API returned error");
+      res.status(502).json({ error: "AI assistant temporarily unavailable" });
+      return;
+    }
+
+    if (!response.ok || !data.choices?.[0]?.message?.content) {
+      req.log.error({ status: response.status, body: rawBody }, "Groq request failed or empty reply");
+      res.status(502).json({ error: "AI assistant temporarily unavailable" });
+      return;
+    }
+
+    const reply = data.choices[0].message.content;
+
+    if (containsErrorText(reply)) {
+      req.log.error({ reply }, "Groq returned error text as response content");
+      res.status(502).json({ error: "AI assistant temporarily unavailable" });
+      return;
+    }
+
+    res.json({ reply });
   } catch (err) {
     req.log.error({ err }, "Chat request failed");
     res.status(502).json({ error: "AI assistant temporarily unavailable" });

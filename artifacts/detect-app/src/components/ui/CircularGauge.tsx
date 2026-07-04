@@ -62,8 +62,8 @@ export function CircularGauge({
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: delay + 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-            className="text-2xl font-black tabular-nums"
-            style={{ color }}
+            className="font-black tabular-nums"
+            style={{ fontSize: Math.max(size * 0.32, 10), lineHeight: 1, color }}
           >
             {count}
           </motion.span>

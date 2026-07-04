@@ -20,7 +20,7 @@ router.get("/detections", requireAuth, async (req, res): Promise<void> => {
 
     const { limit = 20, offset = 0, mediaType = "all" } = parsed.data;
 
-    const conditions: any[] = [eq(detectionsTable.userId, req.userId)];
+    const conditions: any[] = [eq(detectionsTable.userId, req.userId as number)];
     if (mediaType !== "all") {
       conditions.push(eq(detectionsTable.mediaType, mediaType as "image" | "video"));
     }
@@ -57,7 +57,7 @@ router.get("/detections/:id", requireAuth, async (req, res): Promise<void> => {
   const [detection] = await db
     .select()
     .from(detectionsTable)
-    .where(and(eq(detectionsTable.id, params.data.id), eq(detectionsTable.userId, req.userId)));
+    .where(and(eq(detectionsTable.id, params.data.id), eq(detectionsTable.userId, req.userId as number)));
 
   if (!detection) {
     res.status(404).json({ error: "Detection not found" });
@@ -76,7 +76,7 @@ router.delete("/detections/:id", requireAuth, async (req, res): Promise<void> =>
 
   const [deleted] = await db
     .delete(detectionsTable)
-    .where(and(eq(detectionsTable.id, params.data.id), eq(detectionsTable.userId, req.userId)))
+    .where(and(eq(detectionsTable.id, params.data.id), eq(detectionsTable.userId, req.userId as number)))
     .returning();
 
   if (!deleted) {

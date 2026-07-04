@@ -167,7 +167,10 @@ async function detectWithOnnx(
   const kept: Candidate[] = [];
   for (const cand of candidates) {
     const overlaps = kept.some(
-      (k) => k.className === cand.className && iou(cand, k) > cfg.iouThreshold,
+      (k) => k.className === cand.className && iou(
+        { x: cand.x, y: cand.y, width: cand.w, height: cand.h },
+        { x: k.x, y: k.y, width: k.w, height: k.h },
+      ) > cfg.iouThreshold,
     );
     if (!overlaps) kept.push(cand);
   }
@@ -187,16 +190,16 @@ async function detectWithOnnx(
 }
 
 function iou(
-  a: { x: number; y: number; w: number; h: number },
-  b: { x: number; y: number; w: number; h: number },
+  a: { x: number; y: number; width: number; height: number },
+  b: { x: number; y: number; width: number; height: number },
 ): number {
-  const ax2 = a.x + a.w, ay2 = a.y + a.h;
-  const bx2 = b.x + b.w, by2 = b.y + b.h;
+  const ax2 = a.x + a.width, ay2 = a.y + a.height;
+  const bx2 = b.x + b.width, by2 = b.y + b.height;
   const ix1 = Math.max(a.x, b.x), iy1 = Math.max(a.y, b.y);
   const ix2 = Math.min(ax2, bx2), iy2 = Math.min(ay2, by2);
   const iw = Math.max(0, ix2 - ix1), ih = Math.max(0, iy2 - iy1);
   const interArea = iw * ih;
-  const unionArea = a.w * a.h + b.w * b.h - interArea;
+  const unionArea = a.width * a.height + b.width * b.height - interArea;
   return unionArea <= 0 ? 0 : interArea / unionArea;
 }
 

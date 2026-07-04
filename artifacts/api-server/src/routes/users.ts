@@ -6,7 +6,7 @@ import { requireAuth } from "../middlewares/auth";
 const router = Router();
 
 router.patch("/users/:id", requireAuth, async (req, res): Promise<void> => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   if (!Number.isFinite(id)) {
     res.status(400).json({ error: "Invalid user ID" });
     return;
