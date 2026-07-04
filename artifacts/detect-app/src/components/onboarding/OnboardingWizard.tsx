@@ -50,11 +50,11 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-Username": user?.username ?? "" },
-        body: JSON.stringify({ message: msg, userContext: user ? { username: user.username, scanCount: 0 } : undefined }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
       });
       const data = await res.json();
-      const reply = data.reply || "Got it!";
+      const reply = data.reply || "Ready when you are!";
       setMessages([...newMessages, { role: "assistant", content: reply }]);
       speak(reply);
     } catch {

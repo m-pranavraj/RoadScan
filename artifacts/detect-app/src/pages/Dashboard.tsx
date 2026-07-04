@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useGetStats, useGetRecentDetections } from "@workspace/api-client-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Activity, Target, TrendingUp, Timer, ChevronRight, AlertTriangle } from "lucide-react";
+import { Activity, Target, TrendingUp, Timer, ChevronRight } from "lucide-react";
 import {
   Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, BarChart, Bar, Cell,
 } from "recharts";
@@ -15,10 +14,10 @@ const SEVERITY_CONFIG = {
 };
 
 const STAT_CARDS = [
-  { key: "totalScans",     label: "Total Scans",      icon: Activity,   gradient: "from-cyan-50 via-cyan-50/50 to-transparent",  border: "border-cyan-300",   accent: "#0891b2" },
-  { key: "totalObjects",   label: "Objects Detected", icon: Target,     gradient: "from-purple-50 via-purple-50/50 to-transparent", border: "border-purple-300", accent: "#9333ea" },
-  { key: "avgConfidence",  label: "Avg Confidence",   icon: TrendingUp, gradient: "from-green-50 via-green-50/50 to-transparent",  border: "border-green-300",  accent: "#16a34a" },
-  { key: "avgProcessingMs",label: "Avg Processing",   icon: Timer,      gradient: "from-amber-50 via-amber-50/50 to-transparent",  border: "border-amber-300",  accent: "#d97706" },
+  { key: "totalScans",     label: "Total Scans",      icon: Activity,   accent: "#0891b2" },
+  { key: "totalObjects",   label: "Objects Detected", icon: Target,     accent: "#9333ea" },
+  { key: "avgConfidence",  label: "Avg Confidence",   icon: TrendingUp, accent: "#16a34a" },
+  { key: "avgProcessingMs",label: "Avg Processing",   icon: Timer,      accent: "#d97706" },
 ];
 
 const CLASS_CONFIG = [
@@ -40,14 +39,10 @@ export default function Dashboard() {
   if (statsLoading || recentLoading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-2">
-          <Skeleton className="h-10 w-64 rounded-lg bg-muted" />
-          <Skeleton className="h-4 w-96 rounded bg-muted" />
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-36 rounded-xl bg-muted" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="paper-card-vintage h-28" />)}
         </div>
-        <Skeleton className="h-[400px] w-full rounded-xl bg-muted" />
+        <div className="paper-card-vintage h-[400px]" />
       </div>
     );
   }
@@ -55,7 +50,7 @@ export default function Dashboard() {
   if (statsError || recentError) {
     return (
       <div className="py-20 text-center">
-        <p className="text-destructive font-mono">Failed to load dashboard data. Please try again later.</p>
+        <p className="font-serif text-sm text-red-600">Failed to load dashboard data. Please try again later.</p>
       </div>
     );
   }
@@ -63,20 +58,23 @@ export default function Dashboard() {
   if (!stats) {
     return (
       <div className="py-20 text-center">
-        <p className="text-muted-foreground font-mono">No analytics data available yet. Run some scans first.</p>
+        <p className="font-serif text-sm text-stone-500 italic">No analytics data available yet. Run some scans first.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-8 pb-12">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-1 h-8 rounded-full" style={{ background: "linear-gradient(180deg, #00d4ff, #a855f7)" }} />
-          <h1 className="text-4xl font-black tracking-tight" style={{ background: "linear-gradient(135deg, #00d4ff, #22c55e)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Command Center</h1>
+          <div className="w-0.5 h-7" style={{ background: "hsl(30 10% 50%)" }} />
+          <h1 className="text-3xl font-serif font-bold text-stone-800 tracking-tight">
+            Dashboard
+          </h1>
         </div>
-        <p className="text-muted-foreground font-mono text-sm ml-4">
-          Real-time aggregated analytics — monitoring urban infrastructure across all field scans.
+        <p className="text-stone-500 font-serif text-sm ml-4 italic">
+          Aggregated analytics across all your field scans.
         </p>
       </motion.div>
 
@@ -92,20 +90,18 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className={`relative overflow-hidden rounded-xl border ${card.border} bg-gradient-to-br ${card.gradient} p-5 hover:shadow-md transition-shadow`}
+              whileHover={{ y: -2, transition: { duration: 0.2 } }}
+              className="paper-card-vintage p-4"
             >
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{card.label}</p>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{ background: `${card.accent}22`, border: `1px solid ${card.accent}44` }}>
-                  <Icon className="w-4 h-4" style={{ color: card.accent }} />
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-xs font-serif text-stone-500">{card.label}</p>
+                <div className="w-7 h-7 flex items-center justify-center"
+                  style={{ background: `${card.accent}15`, border: `1px solid ${card.accent}30` }}>
+                  <Icon className="w-3.5 h-3.5" style={{ color: card.accent }} />
                 </div>
               </div>
-              <div className="text-3xl font-black tracking-tight mb-1" style={{ color: card.accent }}>
-                {displayVal}
-              </div>
-              <div className="h-0.5 rounded-full mt-3 opacity-40" style={{ background: `linear-gradient(90deg, ${card.accent}, transparent)` }} />
+              <p className="text-2xl font-serif font-bold text-stone-800">{displayVal}</p>
+              <div className="h-px mt-3 opacity-30" style={{ background: `linear-gradient(90deg, ${card.accent}, transparent)` }} />
             </motion.div>
           );
         })}
@@ -117,16 +113,12 @@ export default function Dashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="lg:col-span-2 rounded-xl border border-border overflow-hidden bg-card"
+          className="lg:col-span-2 paper-card-vintage p-0"
         >
-          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-dashed border-stone-300/60 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-600" />
-              <span className="font-mono text-sm uppercase tracking-widest text-foreground">Daily Scan Activity</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-              <span className="text-xs font-mono text-muted-foreground/70">Live</span>
+              <Activity className="w-4 h-4 text-stone-500" />
+              <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Daily Scan Activity</span>
             </div>
           </div>
           <div className="p-4 h-[300px]">
@@ -148,8 +140,8 @@ export default function Dashboard() {
                 <YAxis tickLine={false} axisLine={false}
                   tick={{ fontSize: 11, fontFamily: 'Space Mono', fill: 'hsl(30 10% 50%)' }} tickMargin={8} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(40 30% 95%)', border: '1px solid hsl(30 10% 75%)', borderRadius: 8, fontFamily: 'Space Mono', fontSize: 11 }}
-                  labelStyle={{ color: 'hsl(30 10% 20%)' }}
+                  contentStyle={{ backgroundColor: 'hsl(40 30% 95%)', border: '1px solid hsl(30 10% 75%)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: 11 }}
+                  labelStyle={{ color: 'hsl(30 10% 20%)', fontWeight: 600 }}
                   itemStyle={{ color: '#0891b2' }}
                 />
                 <Area type="monotone" dataKey="scans" stroke="#00d4ff" strokeWidth={2.5}
@@ -168,10 +160,10 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.35 }}
-            className="rounded-xl border border-border overflow-hidden bg-card"
+            className="paper-card-vintage p-0"
           >
-            <div className="px-4 py-3 border-b border-border">
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Class Breakdown</span>
+            <div className="px-4 py-3 border-b border-dashed border-stone-300/60">
+              <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Class Breakdown</span>
             </div>
             <div className="p-4 space-y-3">
               {CLASS_CONFIG.map((cls) => {
@@ -179,16 +171,16 @@ export default function Dashboard() {
                 const pct = stats.totalObjects > 0 ? (val / stats.totalObjects) * 100 : 0;
                 return (
                   <div key={cls.key}>
-                    <div className="flex justify-between mb-1.5">
-                      <span className="text-xs font-mono text-muted-foreground">{cls.label}</span>
-                      <span className="text-xs font-mono font-bold" style={{ color: cls.color }}>{val}</span>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs font-serif text-stone-500">{cls.label}</span>
+                      <span className="text-xs font-serif font-bold" style={{ color: cls.color }}>{val}</span>
                     </div>
-                    <div className="h-1.5 rounded-full w-full bg-muted overflow-hidden">
+                    <div className="h-1.5 w-full bg-stone-200 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-                        className="h-full rounded-full"
+                        className="h-full"
                         style={{ background: `linear-gradient(90deg, ${cls.color}, ${cls.color}88)` }}
                       />
                     </div>
@@ -214,27 +206,28 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="rounded-xl border border-border overflow-hidden bg-card"
+            className="paper-card-vintage p-0"
           >
-            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Recent Alerts</span>
+            <div className="px-4 py-3 border-b border-dashed border-stone-300/60 flex items-center justify-between">
+              <span className="font-serif text-xs font-semibold text-stone-700 uppercase tracking-wider">Recent Alerts</span>
               <Link href="/history">
-                <span className="text-xs font-mono text-cyan-600 hover:text-cyan-700 flex items-center gap-1 cursor-pointer">
+                <span className="text-xs font-serif text-stone-500 hover:text-stone-700 flex items-center gap-1 cursor-pointer italic">
                   All <ChevronRight className="w-3 h-3" />
                 </span>
               </Link>
             </div>
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-stone-200/50">
               {(recent ?? []).slice(0, 4).map((item) => {
                 const sev = SEVERITY_CONFIG[item.severity as keyof typeof SEVERITY_CONFIG];
                 return (
                   <Link key={item.id} href={`/detection/${item.id}`}>
-                    <div className="px-4 py-3 hover:bg-muted transition-colors cursor-pointer flex items-center justify-between gap-3">
-                      <div className="min-w-0 flex items-center gap-2.5">
-                        <div className="w-2 h-2 rounded-full shrink-0" style={{ background: sev?.dot ?? "#6b7280", boxShadow: `0 0 6px ${sev?.dot ?? "#6b7280"}` }} />
-                          <p className="text-xs font-medium truncate text-foreground">{item.filename}</p>
+                    <div className="px-4 py-2.5 hover:bg-stone-100/50 transition-colors cursor-pointer flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: sev?.dot ?? "#78716c" }} />
+                          <p className="text-xs font-serif text-stone-700 truncate">{item.filename}</p>
                       </div>
-                      <span className={`shrink-0 text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-bold ${sev?.text ?? ""} ${sev?.border ?? ""}`}>
+                      <span className="tag-vintage text-[10px] uppercase font-bold"
+                        style={{ background: `${sev?.dot}15`, color: sev?.dot, borderColor: `${sev?.dot}30` }}>
                         {item.severity}
                       </span>
                     </div>
@@ -252,7 +245,8 @@ export default function Dashboard() {
 export function SeverityBadge({ severity }: { severity: string }) {
   const config = SEVERITY_CONFIG[severity as keyof typeof SEVERITY_CONFIG];
   return (
-    <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded border font-bold ${config?.text ?? "text-muted-foreground"} ${config?.border ?? "border-border"} bg-gradient-to-r ${config?.bg ?? ""}`}>
+    <span className="tag-vintage text-[10px] uppercase font-bold"
+      style={{ background: `${config?.dot}15`, color: config?.dot, borderColor: `${config?.dot}30` }}>
       {severity}
     </span>
   );

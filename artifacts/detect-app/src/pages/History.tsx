@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useListDetections, useDeleteDetection, getListDetectionsQueryKey, getGetStatsQueryKey, getGetRecentDetectionsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Trash2, Image as ImageIcon, Video, FolderSearch } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -53,33 +52,28 @@ export default function History() {
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-1 h-8 rounded-full" style={{ background: "linear-gradient(180deg, #f59e0b, #ef4444)" }} />
-            <h1 className="text-4xl font-black tracking-tight" style={{ background: "linear-gradient(135deg, #f59e0b, #ef4444)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <div className="w-0.5 h-7" style={{ background: "hsl(30 10% 50%)" }} />
+            <h1 className="text-3xl font-serif font-bold text-stone-800 tracking-tight">
               Scan History
             </h1>
           </div>
-          <p className="text-muted-foreground font-mono text-sm ml-4">
+          <p className="text-stone-500 font-serif text-sm ml-4 italic">
             Complete log of all field scans — {data?.total ?? 0} records
           </p>
         </motion.div>
 
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-muted border border-border">
+        <div className="flex items-center gap-2">
           {[
             { key: "all" as const,   icon: FolderSearch, label: "All"    },
             { key: "image" as const, icon: ImageIcon,    label: "Images" },
             { key: "video" as const, icon: Video,        label: "Video"  },
           ].map(({ key, icon: Icon, label }) => (
             <button key={key} onClick={() => setFilter(key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase transition-all ${
-                filter === key
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              style={filter === key ? { background: "linear-gradient(135deg, hsl(189 100% 93%), hsl(271 91% 93%))", border: "1px solid hsl(189 100% 80%)" } : {}}
-            >
-              <Icon className="w-3 h-3" />
+              className={filter === key ? "tag-vintage font-bold" : "tag-vintage opacity-60 hover:opacity-100 transition-opacity"}>
+              <Icon className="w-3 h-3 mr-1" />
               {label}
             </button>
           ))}
@@ -89,20 +83,20 @@ export default function History() {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-[300px] rounded-xl bg-muted" />
+            <div key={i} className="paper-card-vintage h-[280px]" />
           ))}
         </div>
       ) : !data || data.items.length === 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="py-24 rounded-2xl flex flex-col items-center justify-center text-center border-2 border-dashed border-border">
-          <FolderSearch className="w-12 h-12 text-stone-400 mb-4" />
-          <h3 className="text-xl font-bold text-stone-700 mb-2">No Records Found</h3>
-          <p className="text-stone-500 font-mono text-sm mb-6 max-w-md">
+          className="paper-card-stitch py-24 flex flex-col items-center justify-center text-center">
+          <FolderSearch className="w-10 h-10 text-stone-400 mb-3" />
+          <h3 className="text-lg font-serif font-bold text-stone-700 mb-1">No Records Found</h3>
+          <p className="text-stone-500 font-serif text-sm italic mb-5 max-w-md">
             No detections match the current filter. Upload media to generate records.
           </p>
           <Link href="/">
-            <button className="px-5 py-2.5 rounded-xl font-mono font-bold text-background"
-              style={{ background: "linear-gradient(135deg, hsl(30 10% 25%), hsl(30 10% 20%))" }}>
+            <button className="px-5 py-2 font-serif text-sm font-semibold text-stone-100"
+              style={{ background: "hsl(30 10% 25%)" }}>
               Run New Scan
             </button>
           </Link>
@@ -121,59 +115,53 @@ export default function History() {
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 >
                   <Link href={`/detection/${item.id}`}>
-                    <div className={`group cursor-pointer rounded-2xl overflow-hidden border ${sev?.border} bg-card`}
-                      style={{ boxShadow: `0 4px 24px ${sev?.glow}` }}>
+                    <div className="paper-card-vintage group cursor-pointer">
                       {/* Image */}
                       <div className="relative aspect-video overflow-hidden"
-                        style={{ background: "hsl(222 47% 7%)" }}>
+                        style={{ background: "hsl(40 30% 90%)" }}>
                         {item.thumbnailUrl ? (
                           <img src={item.thumbnailUrl} alt={item.filename}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground/40 font-mono text-xs">
-                            NO PREVIEW
+                          <div className="w-full h-full flex items-center justify-center text-stone-400 font-serif text-xs italic">
+                            No Preview
                           </div>
                         )}
                         {/* Severity badge */}
-                        <div className="absolute top-2.5 right-2.5">
-                          <span className={`text-[10px] font-mono uppercase font-black px-2.5 py-1 rounded-lg border ${sev?.text} ${sev?.border}`}
-                            style={{ background: `${sev?.color}22`, backdropFilter: "blur(8px)" }}>
+                        <div className="absolute top-2 right-2">
+                          <span className="tag-vintage text-[10px] uppercase font-bold"
+                            style={{ background: `${sev?.color}15`, color: sev?.color, borderColor: `${sev?.color}40` }}>
                             {item.severity}
                           </span>
                         </div>
                         {/* Media type */}
-                        <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md font-mono text-[10px] text-white/60"
-                          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        <div className="absolute bottom-2 left-2 tag-vintage text-[10px]">
                           {item.mediaType.toUpperCase()}
                         </div>
-                        {/* Scan line on hover */}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                          style={{ background: `linear-gradient(180deg, transparent 40%, ${sev?.color}20 100%)` }} />
                       </div>
 
                       {/* Info */}
-                      <div className="p-4">
-                        <h3 className="font-bold text-sm truncate text-foreground mb-1" title={item.filename}>
+                      <div className="p-3">
+                        <h3 className="font-serif text-sm font-semibold text-stone-800 truncate mb-0.5" title={item.filename}>
                           {item.filename}
                         </h3>
-                        <div className="text-xs font-mono text-muted-foreground/70 mb-3">
+                        <p className="text-xs font-mono text-stone-500 mb-2">
                           {new Date(item.createdAt).toLocaleString()}
-                        </div>
+                        </p>
 
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-1">
                           {(Object.entries(CLASS_CHIPS) as [keyof typeof CLASS_CHIPS, typeof CLASS_CHIPS[keyof typeof CLASS_CHIPS]][]).map(([key, cfg]) => {
                             const count = item.counts[key as keyof typeof item.counts];
                             if (!count) return null;
                             return (
-                              <div key={key} className="flex items-center rounded-lg overflow-hidden text-[10px] font-mono font-bold"
-                                style={{ border: `1px solid ${cfg.color}40` }}>
-                                <span className="px-2 py-0.5" style={{ background: `${cfg.color}20`, color: cfg.color }}>{cfg.label}</span>
-                                  <span className="px-2 py-0.5 text-muted-foreground" style={{ background: "hsl(40 30% 90%)" }}>{count}</span>
-                              </div>
+                              <span key={key} className="tag-vintage text-[10px] font-bold"
+                                style={{ background: `${cfg.color}15`, color: cfg.color, borderColor: `${cfg.color}40` }}>
+                                {cfg.label} {count}
+                              </span>
                             );
                           })}
                           {item.counts.total === 0 && (
-                            <span className="text-[10px] font-mono text-green-400/70 px-2 py-0.5 rounded border border-green-500/20 bg-green-500/10">
+                            <span className="tag-vintage text-[10px]" style={{ color: "#78716c" }}>
                               CLEAN
                             </span>
                           )}
@@ -181,13 +169,13 @@ export default function History() {
                       </div>
 
                       {/* Delete */}
-                      <div className="px-4 pb-3 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="px-3 pb-3 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={(e) => handleDelete(item.id, e)}
                           disabled={deleteDetection.isPending}
-                          className="flex items-center gap-1.5 text-[11px] font-mono text-destructive/70 hover:text-destructive transition-colors px-2 py-1 rounded hover:bg-destructive/10"
+                          className="text-xs font-serif text-stone-400 hover:text-red-600 transition-colors px-2 py-0.5 hover:bg-red-50"
                         >
-                          <Trash2 className="w-3 h-3" /> Delete
+                          <Trash2 className="w-3 h-3 inline mr-1" />Delete
                         </button>
                       </div>
                     </div>
