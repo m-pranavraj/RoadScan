@@ -40,6 +40,34 @@ const CLASS_COLORS: Record<string, { r: number; g: number; b: number }> = {
   other_litter:  { r: 249, g: 115, b: 22 },
 };
 
+const FONT: Record<string, string> = {
+  'A': 'M0,6 L0,2 L2,0 L4,2 L4,6 M0,3 L4,3',
+  'B': 'M0,0 L3,0 L4,1 L4,2 L3,3 L4,4 L4,5 L3,6 L0,6 Z M0,3 L3,3',
+  'C': 'M4,1 L3,0 L1,0 L0,1 L0,5 L1,6 L3,6 L4,5',
+  'E': 'M4,0 L0,0 L0,6 L4,6 M0,3 L3,3',
+  'H': 'M0,0 L0,6 M4,0 L4,6 M0,3 L4,3',
+  'I': 'M1,0 L3,0 M2,0 L2,6 M1,6 L3,6',
+  'L': 'M0,0 L0,6 L4,6',
+  'O': 'M1,0 L3,0 L4,1 L4,5 L3,6 L1,6 L0,5 L0,1 Z',
+  'P': 'M0,6 L0,0 L3,0 L4,1 L4,2 L3,3 L0,3',
+  'R': 'M0,6 L0,0 L3,0 L4,1 L4,2 L3,3 L0,3 M2,3 L4,6',
+  'S': 'M4,1 L3,0 L1,0 L0,1 L0,2 L1,3 L3,3 L4,4 L4,5 L3,6 L1,6 L0,5',
+  'T': 'M0,0 L4,0 M2,0 L2,6',
+  'W': 'M0,0 L0,6 L2,4 L4,6 L4,0',
+  ' ': '',
+  '0': 'M1,0 L3,0 L4,1 L4,5 L3,6 L1,6 L0,5 L0,1 Z M4,1 L0,5',
+  '1': 'M1,2 L2,0 L2,6 M0,6 L4,6',
+  '2': 'M0,1 L1,0 L3,0 L4,1 L4,2 L0,6 L4,6',
+  '3': 'M0,1 L1,0 L3,0 L4,1 L4,2 L3,3 L4,4 L4,5 L3,6 L1,6 L0,5 M2,3 L4,3',
+  '4': 'M3,6 L3,0 L0,4 L0,5 L4,5',
+  '5': 'M4,0 L0,0 L0,3 L3,3 L4,4 L4,5 L3,6 L1,6 L0,5',
+  '6': 'M3,0 L1,0 L0,1 L0,6 L3,6 L4,5 L4,3 L3,2 L0,2',
+  '7': 'M0,0 L4,0 L1,6',
+  '8': 'M1,0 L3,0 L4,1 L4,2 L3,3 L4,4 L4,5 L3,6 L1,6 L0,5 L0,4 L1,3 L0,2 L0,1 Z M0,3 L4,3',
+  '9': 'M1,6 L3,6 L4,5 L4,0 L1,0 L0,1 L0,3 L1,4 L4,4',
+  '%': 'M0,1 L1,0 L2,1 L1,2 Z M4,0 L0,6 M2,5 L3,4 L4,5 L3,6 Z',
+};
+
 function mapPotholeNetLabel(rawLabel: string): DetectedObject["className"] | null {
   const n = rawLabel.toLowerCase().replace(/[\s-]+/g, "_");
   if (n === "pothole") return "pothole";
@@ -253,9 +281,11 @@ async function annotateImage(
     const bw = Math.max(20, Math.round(obj.bbox.width * imgW));
     const bh = Math.max(10, Math.round(obj.bbox.height * imgH));
     const pct = Math.round(obj.confidence * 100);
-    const labelText = `${obj.className.replace(/_/g, " ")} ${pct}%`;
+    const labelText = `${obj.className.replace(/_/g, " ")} ${pct}%`.toUpperCase();
+    const scale = 1.6;
+    const charW = 6 * scale;
+    const labelW = Math.max(bw, labelText.length * charW + 12);
     const labelH = 24;
-    const labelW = Math.max(bw, labelText.length * 7 + 12);
     const colorStr = `rgb(${color.r},${color.g},${color.b})`;
 
     const rectSvg = `<svg width="${bw}" height="${bh}" xmlns="http://www.w3.org/2000/svg">
@@ -263,10 +293,20 @@ async function annotateImage(
         fill="none" stroke="${colorStr}" stroke-width="3" stroke-opacity="0.95"/>
     </svg>`;
 
+    let textPaths = '';
+    let cx = 6;
+    for (const char of labelText) {
+      const p = FONT[char];
+      if (p) {
+        textPaths += `<g transform="translate(${cx}, 7) scale(${scale})"><path d="${p}" fill="none" stroke="white" stroke-width="${1.8/scale}" stroke-linecap="round" stroke-linejoin="round" /></g>`;
+      }
+      cx += charW;
+    }
+
     const labelSvg = `<svg width="${labelW}" height="${labelH}" xmlns="http://www.w3.org/2000/svg">
       <rect x="0" y="0" width="${labelW}" height="${labelH}"
         fill="${colorStr}" fill-opacity="0.92"/>
-      <text x="6" y="16" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="white" font-weight="bold">${labelText}</text>
+      ${textPaths}
     </svg>`;
 
     const safeLeft = Math.max(0, Math.min(bx, imgW - bw));
