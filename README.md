@@ -2,7 +2,7 @@
 title: RoadScan AI
 emoji: 🛣️
 colorFrom: blue
-colorTo: orange
+colorTo: red
 sdk: docker
 pinned: false
 ---
